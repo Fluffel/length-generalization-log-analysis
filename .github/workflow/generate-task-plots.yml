@@ -1,0 +1,31 @@
+name: Generate Task plots
+
+on:
+  push:
+    paths:
+      - "logs/**"
+
+permissions:
+  contents: write
+
+jobs:
+  generate-plots:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pandas matplotlib seaborn
+
+      - name: Generate plots
+        run: |
+          python scripts/update_ssm_plots.py --arch olmossm
+          python scripts/generate_summary_csv.py --num-bins 3
