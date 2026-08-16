@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Algorithmic tasks — SSM plots</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem; color: #222; }
+  h1 { margin-bottom: 0.25rem; }
+  .meta { color: #666; margin-bottom: 1.5rem; line-height: 1.6; }
+  .legend-dot { display: inline-block; width: 0.8rem; height: 0.8rem;
+                 border: 3px solid #2e7d32; border-radius: 3px;
+                 vertical-align: middle; }
+  .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+           gap: 1.25rem; }
+  .panel { border: 3px solid #d8d8d8; border-radius: 8px; padding: 0.75rem;
+            background: #fff; }
+  .panel.pass { border-color: #2e7d32; background: #f3fbf4; }
+  .panel h2 { font-size: 1rem; margin: 0 0 0.5rem; }
+  .panel img { width: 100%; height: auto; display: block; }
+  .models { font-size: 0.8rem; color: #2e7d32; margin-top: 0.5rem;
+             word-break: break-all; line-height: 1.5; }
+  .missing { font-size: 0.9rem; color: #b71c1c; padding: 2rem 0; text-align: center; }
+</style>
+</head>
+<body>
+<h1>Algorithmic tasks — SSM plots</h1>
+<div class="meta">
+  <span class='legend-dot'></span> green border: <strong>olmossm</strong> has a run above 98.0% in every validation bin (3 of 12 tasks).<br>
+  Source: summary.csv, 3 bins, plots from run_tasks_ssm_plot.sh.<br>
+  Generated 2026-08-16 14:36.
+</div>
+<div class="grid">
+  <div class="panel">
+    <h2>addition</h2>
+    <img src="plots/ssm/tasks/addition.svg" alt="addition">
+  </div>
+  <div class="panel">
+    <h2>bin_majority_interleave</h2>
+    <img src="plots/ssm/tasks/bin_majority_interleave.svg" alt="bin_majority_interleave">
+  </div>
+  <div class="panel pass">
+    <h2>bin_majority</h2>
+    <img src="plots/ssm/tasks/bin_majority.svg" alt="bin_majority">
+    <div class="models">olmogdn1l16d0.1drnestp30k0.001lr (99.9%), olmogdn1l64d0drnestp30k0.001lr (99.9%), olmogdn2l64d0.1drnestp30k0.001lr (99.9%), olmogdn1l16d0drnestp30k0.001lr (99.8%), olmogdn1l64d0.1drnestp30k0.001lr (99.8%), +8 more</div>
+  </div>
+  <div class="panel pass">
+    <h2>flipflop</h2>
+    <img src="plots/ssm/tasks/flipflop.svg" alt="flipflop">
+    <div class="models">olmogdn1l16d0.1drnestp30k0.001lr (100.0%), olmogdn1l16d0drnestp30k0.001lr (100.0%), olmogdn1l64d0.1drnestp30k0.001lr (100.0%), olmogdn1l64d0drnestp30k0.001lr (100.0%), olmogdn2l16d0drnestp30k0.001lr (100.0%), +7 more</div>
+  </div>
+  <div class="panel">
+    <h2>majority</h2>
+    <img src="plots/ssm/tasks/majority.svg" alt="majority">
+  </div>
+  <div class="panel">
+    <h2>mkar</h2>
+    <img src="plots/ssm/tasks/mkar.svg" alt="mkar">
+  </div>
+  <div class="panel">
+    <h2>mqar</h2>
+    <img src="plots/ssm/tasks/mqar.svg" alt="mqar">
+  </div>
+  <div class="panel pass">
+    <h2>parity</h2>
+    <img src="plots/ssm/tasks/parity.svg" alt="parity">
+    <div class="models">olmogdn1l64d0drnestp30k0.001lr (100.0%), olmogdn2l64d0.1drnestp30k0.001lr (100.0%), olmogdn1l64d0.1drnestp30k0.001lr (100.0%), olmogdn4l64d0drnestp30k0.001lr (99.8%), olmogdn1l16d0drnestp30k0.001lr (99.7%), +7 more</div>
+  </div>
+  <div class="panel">
+    <h2>repeat_copy</h2>
+    <img src="plots/ssm/tasks/repeat_copy.svg" alt="repeat_copy">
+  </div>
+  <div class="panel">
+    <h2>selective_copy</h2>
+    <img src="plots/ssm/tasks/selective_copy.svg" alt="selective_copy">
+  </div>
+  <div class="panel">
+    <h2>sort</h2>
+    <img src="plots/ssm/tasks/sort.svg" alt="sort">
+  </div>
+  <div class="panel">
+    <h2>unique_copy</h2>
+    <img src="plots/ssm/tasks/unique_copy.svg" alt="unique_copy">
+  </div>
+</div>
+</body>
+</html>
