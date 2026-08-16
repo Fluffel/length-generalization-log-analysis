@@ -1,0 +1,10 @@
+olmogdn1l16d0drnestp30k0.001lr	>> early stop 0.016666666666666666			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9935		eval_len100-149_acc: 0.9215		lr: 0.001
+olmogdn1l16d0.1drnestp30k0.001lr	>> early stop 0.016666666666666666			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.992		eval_len100-149_acc: 0.9085		lr: 0.001
+olmogdn1l16d0drnestp30k0.001lr	reach max step			eval_len0-49_acc: 0.0		eval_len50-99_acc: 0.0		eval_len100-149_acc: 0.0		lr: 0.001
+olmogdn1l16d0.1drnestp30k0.001lr	reach max step			eval_len0-49_acc: 0.7525		eval_len50-99_acc: 0.561		eval_len100-149_acc: 0.5225		lr: 0.001
+olmogdn1l16d0drnestp30k0.001lr	>> early stop 0.023333333333333334			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.947		eval_len100-149_acc: 0.748		lr: 0.001
+olmogdn1l16d0.1drnestp30k0.001lr	>> early stop 0.04666666666666667			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.991		eval_len100-149_acc: 0.8995		lr: 0.001
+olmogdn1l16d0drnestp30k0.001lr	>> early stop 0.023333333333333334			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9675		eval_len100-149_acc: 0.8295		lr: 0.001
+olmogdn1l16d0.1drnestp30k0.001lr	reach max step			eval_len0-49_acc: 0.0		eval_len50-99_acc: 0.0		eval_len100-149_acc: 0.0		lr: 0.001
+olmogdn1l16d0drnestp30k0.001lr	>> early stop 0.03			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9825		eval_len100-149_acc: 0.8725		lr: 0.001
+olmogdn1l16d0.1drnestp30k0.001lr	>> early stop 0.03333333333333333			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9955		eval_len100-149_acc: 0.9385		lr: 0.001

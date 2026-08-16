@@ -1,0 +1,1 @@
+olmohybsssa1l2h64d0drnestp15k0.0001lr	[curriculum step 1/5 size=10] reach step cap	eval_len0-9_acc: 0.0		eval_len10-19_acc: 0.0		eval_len20-29_acc: 0.0		lr: 0.0001
