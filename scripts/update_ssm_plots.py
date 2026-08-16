@@ -106,7 +106,7 @@ def parse_plot_script(path: Path, *, name: str, title: str) -> PlotScript:
             "script does not write one plot per task."
         )
 
-    csv_value = _flag_value(text, "--csv") or "exports/summary.csv"
+    csv_value = _flag_value(text, "--csv") or "summary.csv"
     num_bins_value = _flag_value(text, "--num-bins")
 
     return PlotScript(
@@ -299,7 +299,7 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=REPO_ROOT,
+        default=REPO_ROOT / "site",
         help="Directory for the HTML pages.",
     )
     parser.add_argument(

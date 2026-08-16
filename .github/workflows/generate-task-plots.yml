@@ -5,8 +5,12 @@ on:
     paths:
       - "logs/**"
 
+  workflow_dispatch:
+
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   generate-plots:
@@ -25,19 +29,31 @@ jobs:
         run: |
           pip install pandas matplotlib seaborn
 
-      - name: Generate plots
+      - name: Generate summary CSV
         run: |
-          python scripts/generate_summary_csv.py --num-bins 3 --csv summary.csv
+          python scripts/generate_summary_csv.py --num-bins 3
+
+      - name: Generate SSM plots
+        run: |
           python scripts/update_ssm_plots.py --arch olmossm
 
-      - name: Commit generated files
+
+      - name: Prepare website
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p site/plots
 
-          git add summary.csv plots/ formal_olmossm_plots.html tasks_olmossm_plots.html
+          cp -r plots/* site/plots/
 
-          if ! git diff --cached --quiet; then
-            git commit -m "Update generated plots and summaries"
-            git push
-          fi
+          cp site/*.html site/
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
