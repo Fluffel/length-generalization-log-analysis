@@ -29,3 +29,15 @@ jobs:
         run: |
           python scripts/update_ssm_plots.py --arch olmossm
           python scripts/generate_summary_csv.py --num-bins 3
+
+      - name: Commit generated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add plots/ results/
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update generated plots and summaries"
+            git push
+          fi
