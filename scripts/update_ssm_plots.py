@@ -27,7 +27,9 @@ from pathlib import Path
 from plot_utils import load_summary_dataframe
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPT_DIR.parents[1]
+REPO_ROOT = SCRIPT_DIR.parents[0]
+
+print(f"script dirctory: {REPO_ROOT}")
 
 _TASKS_ARRAY_RE = re.compile(r"tasks=\(\s*(.*?)\)", re.DOTALL)
 _TOKEN_RE = re.compile(r"\"([^\"]+)\"|'([^']+)'|(\S+)")
@@ -297,8 +299,8 @@ def main() -> int:
     parser.add_argument(
         "--output",
         type=Path,
-        default=REPO_ROOT / "exports",
-        help="Directory for the HTML pages (default: exports/).",
+        default=REPO_ROOT,
+        help="Directory for the HTML pages.",
     )
     parser.add_argument(
         "--threshold",

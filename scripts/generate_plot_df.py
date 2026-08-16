@@ -669,9 +669,9 @@ def main() -> int:
             "for standard pandas expressions."
         )
     )
-    repo_root = Path(__file__).resolve().parents[2]
-    default_csv = repo_root / "exports" / "summary_results_9bins.csv"
-    default_plot_dir = repo_root / "exports" / "plots"
+    repo_root = Path(__file__).resolve().parents[1]
+    default_csv = repo_root / "summary.csv"
+    default_plot_dir = repo_root / "plots"
 
     parser.add_argument("--input-csv", "--csv", dest="input_csv", type=Path, default=default_csv)
     parser.add_argument(

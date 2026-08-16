@@ -22,12 +22,12 @@ tasks=(
 )
 
 for TASK in "${tasks[@]}"; do
-    python algorithmic/convenience_scripts/generate_plot_df.py \
+    python scripts/generate_plot_df.py \
         --task "$TASK" \
         --keep arch=ssm,olmossm \
         --group-by arch \
-        --output "exports/plots/ssm/formal/${TASK}.svg" \
-        --csv exports/summary.csv \
+        --output "plots/ssm/formal/${TASK}.svg" \
+        --csv summary.csv \
         --legend-loc "lower left" \
         --num-bins 3 \
         --merge-bins

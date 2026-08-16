@@ -685,7 +685,8 @@ def main() -> int:
             "bin columns are left empty and num_bins records the actual count."
         )
     )
-    repo_root = Path(__file__).resolve().parents[2]
+    repo_root = Path(__file__).resolve().parents[1]
+    print(f"repo root: {repo_root}")
     default_logs_root = repo_root / "logs"
     default_csv = repo_root / "exports" / "summary.csv"
 
