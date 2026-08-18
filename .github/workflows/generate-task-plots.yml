@@ -44,8 +44,6 @@ jobs:
 
           cp -r plots/* site/plots/
 
-          cp site/*.html site/
-
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
