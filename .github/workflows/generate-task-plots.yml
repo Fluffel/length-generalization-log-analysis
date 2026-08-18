@@ -38,12 +38,6 @@ jobs:
           python scripts/update_ssm_plots.py --arch olmossm
 
 
-      - name: Prepare website
-        run: |
-          mkdir -p site/plots
-
-          cp -r plots/* site/plots/
-
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
