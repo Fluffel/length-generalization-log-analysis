@@ -26,7 +26,7 @@ for TASK in "${tasks[@]}"; do
         --task "$TASK" \
         --keep arch=ssm,olmossm \
         --group-by arch \
-        --output "plots/ssm/formal/${TASK}.svg" \
+        --output "site/plots/ssm/formal/${TASK}.svg" \
         --csv summary.csv \
         --legend-loc "lower left" \
         --num-bins 3 \

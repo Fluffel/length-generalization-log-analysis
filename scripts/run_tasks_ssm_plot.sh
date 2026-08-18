@@ -20,7 +20,7 @@ for TASK in "${tasks[@]}"; do
         --task "$TASK" \
         --keep arch=ssm,olmossm \
         --group-by arch \
-        --output "plots/ssm/tasks/${TASK}.svg" \
+        --output "site/plots/ssm/tasks/${TASK}.svg" \
         --csv summary.csv \
         --legend-loc "lower left" \
         --num-bins 3 \
