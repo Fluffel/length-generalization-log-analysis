@@ -21,3 +21,16 @@ ssmmamba2l64d0.1dr1mlplnstp30k0.0001lr	reach max step			eval_len2-50_acc: 0.2335
 ssmmamba2l256d0dr1mlplnstp30k0.001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.045		eval_len101-150_acc: 0.0		lr: 0.001
 ssmmamba2l256d0dr1mlplnstp30k0.0001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.0755		eval_len101-150_acc: 0.0		lr: 0.0001
 ssmmamba2l256d0.1dr1mlplnstp30k0.001lr	reach max step			eval_len2-50_acc: 0.642		eval_len51-100_acc: 0.0485		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba2l256d0.1dr1mlplnstp30k0.0001lr	reach max step			eval_len2-50_acc: 0.255		eval_len51-100_acc: 0.0825		eval_len101-150_acc: 0.0		lr: 0.0001
+ssmmamba4l16d0dr1mlplnstp30k0.001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.0655		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba4l16d0dr1mlplnstp30k0.0001lr	reach max step			eval_len2-50_acc: 0.368		eval_len51-100_acc: 0.005		eval_len101-150_acc: 0.0		lr: 0.0001
+ssmmamba4l16d0.1dr1mlplnstp30k0.001lr	reach max step			eval_len2-50_acc: 0.828		eval_len51-100_acc: 0.1055		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba4l16d0.1dr1mlplnstp30k0.0001lr	reach max step			eval_len2-50_acc: 0.556		eval_len51-100_acc: 0.0185		eval_len101-150_acc: 0.0		lr: 0.0001
+ssmmamba4l64d0dr1mlplnstp30k0.001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.0735		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba4l64d0dr1mlplnstp30k0.0001lr	>> reach max step			eval_len2-50_acc: 0.9985		eval_len51-100_acc: 0.0665		eval_len101-150_acc: 0.0		lr: 0.0001
+ssmmamba4l64d0.1dr1mlplnstp30k0.001lr	reach max step			eval_len2-50_acc: 0.5975		eval_len51-100_acc: 0.141		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba4l64d0.1dr1mlplnstp30k0.0001lr	reach max step			eval_len2-50_acc: 0.591		eval_len51-100_acc: 0.1935		eval_len101-150_acc: 0.0		lr: 0.0001
+ssmmamba4l256d0dr1mlplnstp30k0.001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.0635		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba4l256d0dr1mlplnstp30k0.0001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.103		eval_len101-150_acc: 0.0		lr: 0.0001
+ssmmamba4l256d0.1dr1mlplnstp30k0.001lr	>> reach max step			eval_len2-50_acc: 1.0		eval_len51-100_acc: 0.071		eval_len101-150_acc: 0.0		lr: 0.001
+ssmmamba4l256d0.1dr1mlplnstp30k0.0001lr	reach max step			eval_len2-50_acc: 0.946		eval_len51-100_acc: 0.262		eval_len101-150_acc: 0.0		lr: 0.0001
