@@ -21,25 +21,36 @@ _LINE_LR_RE = re.compile(r"\blr:\s*([0-9]*\.?[0-9]+(?:e-?[0-9]+)?)")
 # Known SSM kernel identifiers.  Extend this set to add new kernels; they are
 # pre-extracted from the model string before the tokeniser runs so that the
 # [sa]+ layer-ordering rule can remain a simple (?:a|s)+ without any lookaheads.
-KNOWN_KERNELS: frozenset[str] = frozenset({"s4", "s6", "mamba", "mamba2", "mamba3", "gdn"})
+KNOWN_KERNELS: frozenset[str] = frozenset(
+    {"s4", "s6", "mamba", "mamba2", "mamba3", "gdn", "gdn1", "gdn2"}
+)
+
+# Kernels that older logs wrote under a shorter, unversioned name.  ``gdn`` was
+# the only OLMo GatedDeltaNet variant before GDN2 existed, so those runs are
+# GDN1 and are reported as such.
+KERNEL_ALIASES: dict[str, str] = {"gdn": "gdn1"}
+
+# Kernel used by OLMo-backed specs that name no kernel at all (all such runs
+# predate the gdn1/gdn2 split).
+OLMO_DEFAULT_KERNEL = "gdn1"
+DEFAULT_KERNEL = "s4"
 
 # Kernel placeholders use \x01N\x01 (SOH byte as delimiter) so they cannot be
 # split by any letter or digit pattern in the tokeniser regex.
 _KERNEL_SLOT_RE = re.compile(r"\x01(\d+)\x01")
 
-# ``s4`` / ``s6`` appear as *substrings* of ``[as]+`` + ``<n>l`` (e.g. ``aaas4l``:
-# last ``s`` of the motif plus the first digit of ``4l``).  Those must not be
-# pre-extracted as SSM kernels (real modular / legacy names never place a
-# kernel literal between ``hyb`` and ``<n>l``).
-_S4_S6_FALSE_KERNEL_RE = re.compile(r"\d*l")
+# Every kernel literal is immediately followed by the layer count (``<n>l``),
+# optionally preceded by the hybrid layer-ordering motif in the legacy
+# ``hyb<kernel><motif><n>l`` spelling.  Requiring that tail is what tells the
+# real kernel apart from a coincidental substring: in ``hybaaas4l`` the ``s4``
+# is the motif's last ``s`` plus the layer count's ``4``, and in ``ssmmamba2l``
+# the ``2`` is the layer count rather than the ``mamba2`` version digit.
+_KERNEL_TAIL_RE = re.compile(r"(?:a|s)*[0-9]+l")
 
 
-def _sdigit_kernel_is_layer_count_suffix(s: str, pos: int, kernel: str) -> bool:
-    if kernel not in frozenset({"s4", "s6"}):
-        return False
-    if pos == 0 or s[pos - 1] not in "as":
-        return False
-    return _S4_S6_FALSE_KERNEL_RE.match(s[pos + len(kernel) :]) is not None
+def _kernel_match_is_real(s: str, pos: int, kernel: str) -> bool:
+    """``True`` if the *kernel* literal found at *pos* is followed by a layer count."""
+    return _KERNEL_TAIL_RE.match(s, pos + len(kernel)) is not None
 
 
 DEAFAULT_FEATURE_ORDER = ["l", "h", "d", "dr"]  # Some logs omit features; use position fallback.
@@ -181,10 +192,17 @@ def parse_model_spec(model: str) -> dict[str, str]:
     model_clean = model.strip().lstrip("\x00")
     tokens = tokenize_model(model_clean)
 
+    kernels = [tok for tok in tokens if tok in KNOWN_KERNELS]
+
     pure_alpha: set[str] = set()
     features: dict[str, str] = {}  # alpha-key → numeric-value (last wins)
     ith_feature = 0
     for tok in tokens:
+        # Kernel names are handled separately: versioned ones like "gdn1" would
+        # otherwise be read as the numeric feature ("gdn", "1") and shift the
+        # positional fallback used for specs that omit a feature suffix.
+        if tok in KNOWN_KERNELS:
+            continue
         feat = feature_from_token(tok, ith_feature)
         if feat is not None:
             key, val = feat
@@ -201,7 +219,7 @@ def parse_model_spec(model: str) -> dict[str, str]:
         arch += "hyb"
     elif "lm" in pure_alpha:
         arch += "lm"
-    elif "ssm" in pure_alpha or "gdn" in pure_alpha:
+    elif "ssm" in pure_alpha or kernels:
         arch += "ssm"
     # elif arch.startswith("olmo"):
     #     # ``olmo`` alone (no explicit ``lm`` / ``hyb`` / ``ssm``): OLMo SSM-backed stack → gdn.
@@ -211,13 +229,13 @@ def parse_model_spec(model: str) -> dict[str, str]:
         arch += "lm"
 
     # ── SSM kernel ───────────────────────────────────────────────────────────
-    # Kernels are matched as whole tokens (KNOWN_KERNELS), so we just look for
-    # the first kernel token in the stream; default to "s4" if absent.
+    # Kernels are matched as whole tokens (KNOWN_KERNELS), so we just take the
+    # first kernel token in the stream and fall back to the family's default
+    # when the spec names none.
     if "hyb" in arch or "ssm" in arch:
-        if "olmo" in arch:
-            kernel = "gdn"
-        else:
-            kernel = next((tok for tok in tokens if tok in KNOWN_KERNELS), "s4")
+        default = OLMO_DEFAULT_KERNEL if "olmo" in arch else DEFAULT_KERNEL
+        kernel = kernels[0] if kernels else default
+        kernel = KERNEL_ALIASES.get(kernel, kernel)
     else:
         kernel = "-"
 
@@ -590,6 +608,12 @@ def tokenize_model(model: str) -> list[str]:
     Known kernels (``KNOWN_KERNELS``) are pre-replaced with ``\\x01N\\x01``
     placeholders so the ``(?:a|s)+`` layer-ordering rule never sees them and
     can remain a simple greedy match without lookaheads.
+
+    Kernels are tried longest-first, so a versioned name wins over its own
+    prefix whenever both readings leave a valid layer count behind: ``gdn11l``
+    is GDN1 with one layer rather than GDN with eleven.  New logs always write
+    the version digit, and no legacy ``gdn`` run has a two-digit layer count,
+    so that preference is unambiguous in practice.
     """
     s = model.strip().lstrip("\x00").lower()
     # Pre-extract kernels longest-first to avoid partial matches.
@@ -597,7 +621,7 @@ def tokenize_model(model: str) -> list[str]:
     for kernel in sorted(KNOWN_KERNELS, key=len, reverse=True):
         i = 0
         while (pos := s.find(kernel, i)) != -1:
-            if _sdigit_kernel_is_layer_count_suffix(s, pos, kernel):
+            if not _kernel_match_is_real(s, pos, kernel):
                 i = pos + 1
                 continue
             placeholder = f"\x01{len(slots)}\x01"
