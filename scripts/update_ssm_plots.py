@@ -20,6 +20,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -124,11 +125,26 @@ def run_plot_script(script: PlotScript) -> int:
     """Run the shell script from the repo root with our own interpreter first on PATH."""
     env = dict(os.environ)
     env["PATH"] = os.pathsep.join([str(Path(sys.executable).parent), env.get("PATH", "")])
-    print(f"Running {script.path.relative_to(REPO_ROOT)} ...")
+    print(f"Running {script.path.relative_to(REPO_ROOT)} ...", flush=True)
     proc = subprocess.run(["bash", str(script.path)], cwd=REPO_ROOT, env=env)
     if proc.returncode != 0:
-        print(f"  {script.path.name} exited with code {proc.returncode}.")
+        print(f"  {script.path.name} exited with code {proc.returncode}.", flush=True)
     return proc.returncode
+
+
+def stale_plots(script: PlotScript, *, newer_than: float) -> list[str]:
+    """Tasks whose SVG is left over from a previous run rather than rewritten.
+
+    A plot script can fail for one task and leave the old SVG in place, which
+    would then be published as if it were current.  A task with no SVG at all
+    is fine: it simply has no runs yet, and the page says so.
+    """
+    return [
+        task
+        for task in script.tasks
+        if (path := script.plot_path(task)).exists()
+        and path.stat().st_mtime < newer_than
+    ]
 
 
 def qualifying_runs(
@@ -224,8 +240,13 @@ def _render_panel(panel: Panel, html_dir: Path) -> str:
     task = html.escape(panel.task)
     parts = [f"<h2>{task}</h2>"]
     if panel.plot_path.exists():
+        # The SVG filenames are stable, so a browser that has already seen a
+        # page would keep serving the cached plot next to freshly generated
+        # HTML.  The plot's mtime as a query string forces a refetch whenever
+        # the plot actually changed.
         src = html.escape(os.path.relpath(panel.plot_path, html_dir))
-        parts.append(f'<img src="{src}" alt="{task}">')
+        version = int(panel.plot_path.stat().st_mtime)
+        parts.append(f'<img src="{src}?v={version}" alt="{task}">')
     else:
         parts.append('<div class="missing">no plot generated</div>')
     if panel.models:
@@ -349,9 +370,21 @@ def main() -> int:
         ),
     ]
 
+    # Anything older than this was left over from the checkout rather than
+    # written by this run.  One second of slack absorbs filesystem timestamp
+    # granularity.
+    run_started = time.time() - 1
+    failures: list[str] = []
+
     if not args.skip_plots:
         for script in scripts:
-            run_plot_script(script)
+            if run_plot_script(script) != 0:
+                failures.append(f"{script.path.name} exited non-zero")
+        for script in scripts:
+            if stale := stale_plots(script, newer_than=run_started):
+                failures.append(
+                    f"{script.path.name} did not regenerate: {', '.join(stale)}"
+                )
 
     html_dir = args.output
     html_dir.mkdir(parents=True, exist_ok=True)
@@ -389,6 +422,15 @@ def main() -> int:
         )
         if passed:
             print(f"  highlighted: {', '.join(passed)}")
+
+    if failures:
+        # Reported only after the HTML is written, so the pages are still there
+        # to inspect, but with a non-zero status so CI never publishes a site
+        # whose plots are older than its data.
+        print("\nPlot generation failed:", file=sys.stderr)
+        for failure in failures:
+            print(f"  - {failure}", file=sys.stderr)
+        return 1
     return 0
 
 

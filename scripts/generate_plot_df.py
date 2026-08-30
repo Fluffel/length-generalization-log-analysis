@@ -42,6 +42,7 @@ from __future__ import annotations
 import argparse
 import csv
 import math
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -76,6 +77,20 @@ from dataframe_query_utils import (
     apply_query_filters,
     require_columns,
 )
+
+
+# A task with no matching runs is a normal outcome (some tasks have no SSM
+# results yet), not a broken plot.  Callers that loop over tasks distinguish it
+# from a real failure by this exit status and keep going.
+NO_DATA_EXIT = 3
+
+
+class NoDataForTask(SystemExit):
+    """No rows survived filtering, so there is nothing to draw for this task."""
+
+    def __init__(self, message: str) -> None:
+        print(message, file=sys.stderr)
+        super().__init__(NO_DATA_EXIT)
 
 
 def _format_group_key(row: dict, group_by: list[str]) -> str:
@@ -137,7 +152,7 @@ def _prepare_task_plot(
     df["task"] = df["task"].astype(str)
     df = df[df["task"] == task]
     if df.empty:
-        raise SystemExit(f"No rows left for task={task!r} after filtering.")
+        raise NoDataForTask(f"No rows left for task={task!r} after filtering.")
 
     df["bucket"] = df["bucket"].astype(str)
     df["bucket_upper"] = df["bucket"].map(_bucket_upper_bound)
@@ -157,7 +172,7 @@ def _prepare_task_plot(
             keep_dps = cnt[cnt["num_bins"] == num_bins][["model", "learning_rate"]]
             df = df.merge(keep_dps, on=["model", "learning_rate"], how="inner")
         if df.empty:
-            raise SystemExit(f"No rows left after --num-bins={num_bins} for task={task!r}.")
+            raise NoDataForTask(f"No rows left after --num-bins={num_bins} for task={task!r}.")
 
     require_columns(df, group_by, "--group-by")
 
@@ -177,7 +192,7 @@ def _prepare_task_plot(
 
     filtered_rows = dfc.to_dict(orient="records")
     if not filtered_rows:
-        raise SystemExit(f"No rows to plot after collapse/filtering for task={task!r}.")
+        raise NoDataForTask(f"No rows to plot after collapse/filtering for task={task!r}.")
 
     if merge_bins:
         if x_ticks_mode != "bins":
@@ -230,7 +245,7 @@ def _prepare_task_plot(
 
     sub_keys = sorted(sub_series_rows.keys(), key=sub_key_sort)
     if not sub_keys:
-        raise SystemExit(f"No sub-series to plot for task={task!r}.")
+        raise NoDataForTask(f"No sub-series to plot for task={task!r}.")
 
     base_labels = {sk: legend_label_from_rows(sub_series_rows[sk]) for sk in sub_keys}
     sig_count_by_sid: dict[str, int] = defaultdict(int)
