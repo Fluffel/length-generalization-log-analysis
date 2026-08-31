@@ -1,0 +1,17 @@
+olmogdn21l8d0drnestp30k0.001lr	>> early stop 0.02			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn21l8d0drnestp30k0.0001lr	>> early stop 0.43333333333333335			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn21l8d0.1drnestp30k0.001lr	>> early stop 0.016666666666666666			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn21l8d0.1drnestp30k0.0001lr	>> early stop 0.2			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn21l16d0drnestp30k0.001lr	>> early stop 0.01			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn21l16d0drnestp30k0.0001lr	>> early stop 0.07666666666666666			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn21l16d0.1drnestp30k0.001lr	>> early stop 0.01			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn21l16d0.1drnestp30k0.0001lr	>> early stop 0.05333333333333334			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn22l8d0drnestp30k0.001lr	>> early stop 0.02			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn22l8d0drnestp30k0.0001lr	>> early stop 0.26			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn22l8d0.1drnestp30k0.001lr	>> early stop 0.016666666666666666			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn22l8d0.1drnestp30k0.0001lr	>> early stop 0.17333333333333334			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn22l16d0drnestp30k0.001lr	>> early stop 0.01			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn22l16d0drnestp30k0.0001lr	>> early stop 0.09666666666666666			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn22l16d0.1drnestp30k0.001lr	>> early stop 0.01			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
+olmogdn22l16d0.1drnestp30k0.0001lr	>> early stop 0.07			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.0001
+olmogdn24l8d0drnestp30k0.001lr	>> early stop 0.013333333333333334			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001

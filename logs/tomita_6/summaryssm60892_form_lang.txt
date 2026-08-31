@@ -1,0 +1,1 @@
+olmogdn21l8d0drnestp30k0.001lr	reach max step			eval_len1-100_acc: 0.040232558139534885		eval_len101-150_acc: 0.0		eval_len151-200_acc: 0.0		eval_len201-250_acc: 0.0		lr: 0.001
