@@ -1,0 +1,4 @@
+olmogdn21l8d0drnestp30k0.001lr	reach max step			eval_len2-50_acc: 0.5569800569800569		eval_len51-100_acc: 0.0055		eval_len101-150_acc: 0.0		lr: 0.001
+olmogdn21l8d0.1drnestp30k0.001lr	reach max step			eval_len2-50_acc: 0.16524216524216523		eval_len51-100_acc: 0.0035		eval_len101-150_acc: 0.0		lr: 0.001
+olmogdn21l16d0drnestp30k0.001lr	reach max step			eval_len2-50_acc: 0.811965811965812		eval_len51-100_acc: 0.0185		eval_len101-150_acc: 0.0		lr: 0.001
+olmogdn21l16d0.1drnestp30k0.001lr	reach max step			eval_len2-50_acc: 0.7606837606837606		eval_len51-100_acc: 0.006		eval_len101-150_acc: 0.0		lr: 0.001

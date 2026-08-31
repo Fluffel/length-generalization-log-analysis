@@ -1,0 +1,4 @@
+olmogdn21l8d0drnestp30k0.001lr	>> reach max step			eval_len4-500_acc: 1.0		eval_len501-600_acc: 0.875		eval_len601-700_acc: 0.0		lr: 0.001
+olmogdn21l8d0.1drnestp30k0.001lr	>> reach max step			eval_len4-500_acc: 1.0		eval_len501-600_acc: 0.875		eval_len601-700_acc: 0.0		lr: 0.001
+olmogdn21l16d0drnestp30k0.001lr	>> reach max step			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 0.25		lr: 0.001
+olmogdn21l16d0.1drnestp30k0.001lr	>> reach max step			eval_len4-500_acc: 1.0		eval_len501-600_acc: 1.0		eval_len601-700_acc: 1.0		lr: 0.001
