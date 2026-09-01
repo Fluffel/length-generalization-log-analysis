@@ -854,6 +854,159 @@ def select_max_winners_by_bin_index(
     return pruned, all_bins
 
 
+def bin_weight(bin_index: int, factor: float = 1.1) -> float:
+    """Weight for consecutive bin ``bin_index`` (0-based, smallest first).
+
+    ``factor=1.1`` yields 1.0, 1.1, 1.2, ... so later (typically longer) bins
+    contribute more when summing accuracies to pick a single max run.
+    """
+    if bin_index < 0:
+        raise ValueError("bin_index must be >= 0")
+    return 1.0 + bin_index * (factor - 1.0)
+
+
+def _acc_at_bucket(
+    dp: tuple[str, float],
+    bucket: str,
+    dcv: dict[tuple[str, float, str], list[float]],
+) -> float:
+    vals = dcv.get((dp[0], dp[1], bucket), [])
+    return max(vals) if vals else 0.0
+
+
+def weighted_run_score(
+    dp: tuple[str, float],
+    buckets: list[str],
+    dcv: dict[tuple[str, float, str], list[float]],
+    *,
+    weight_factor: float = 1.1,
+) -> float:
+    """Weighted sum of a run's bin accuracies; missing bins count as 0."""
+    return sum(
+        bin_weight(i, weight_factor) * _acc_at_bucket(dp, b, dcv)
+        for i, b in enumerate(buckets)
+    )
+
+
+def _spec_int(spec: dict[str, str], key: str, *, missing: int) -> int:
+    raw = spec.get(key, "-")
+    if raw in ("-", "", None):
+        return missing
+    try:
+        return int(raw)
+    except (TypeError, ValueError):
+        return missing
+
+
+def model_size_key(model: str) -> tuple[int, int, int]:
+    """Sort key for model size: layers, then embedding dim, then heads.
+
+    Missing layers / ``d_model`` sort last. Missing heads (SSMs) count as 0.
+    """
+    spec = parse_model_spec(model)
+    return (
+        _spec_int(spec, "layers", missing=10**9),
+        _spec_int(spec, "d_model", missing=10**9),
+        _spec_int(spec, "heads", missing=0),
+    )
+
+
+def run_meets_acc_threshold(
+    dp: tuple[str, float],
+    buckets: list[str],
+    dcv: dict[tuple[str, float, str], list[float]],
+    *,
+    threshold: float,
+) -> bool:
+    if not buckets:
+        return False
+    return all(_acc_at_bucket(dp, b, dcv) >= threshold for b in buckets)
+
+
+def select_weighted_max_run(
+    datapoints: set[tuple[str, float]],
+    dcv: dict[tuple[str, float, str], list[float]],
+    buckets: list[str],
+    *,
+    weight_factor: float = 1.1,
+) -> tuple[str, float] | None:
+    """Pick the single run with the highest weighted-sum of bin accuracies.
+
+    Ties break toward the run that is better on later bins, then by
+    ``(model, learning_rate)`` for a deterministic result.
+    """
+    if not datapoints or not buckets:
+        return None
+    best_dp: tuple[str, float] | None = None
+    best_key: tuple | None = None
+    for dp in datapoints:
+        accs = tuple(_acc_at_bucket(dp, b, dcv) for b in buckets)
+        score = sum(bin_weight(i, weight_factor) * a for i, a in enumerate(accs))
+        key = (score, *reversed(accs), dp[0], dp[1])
+        if best_key is None or key > best_key:
+            best_key = key
+            best_dp = dp
+    return best_dp
+
+
+def select_max_run(
+    datapoints: set[tuple[str, float]],
+    dcv: dict[tuple[str, float, str], list[float]],
+    buckets: list[str],
+    *,
+    weight_factor: float = 1.1,
+    accuracy_threshold: float = 0.98,
+) -> tuple[str, float] | None:
+    """Pick one run per group for ``--max-aggregation max``.
+
+    If any run is at least ``accuracy_threshold`` on every selected bin, the
+    smallest of those is kept (layers, then ``d_model``, then heads). Otherwise
+    fall back to the weighted-sum winner.
+    """
+    if not datapoints or not buckets:
+        return None
+    passing = [
+        dp
+        for dp in datapoints
+        if run_meets_acc_threshold(dp, buckets, dcv, threshold=accuracy_threshold)
+    ]
+    if not passing:
+        return select_weighted_max_run(
+            datapoints, dcv, buckets, weight_factor=weight_factor
+        )
+
+    def passing_key(dp: tuple[str, float]) -> tuple:
+        layers, d_model, heads = model_size_key(dp[0])
+        score = weighted_run_score(dp, buckets, dcv, weight_factor=weight_factor)
+        return (layers, d_model, heads, -score, dp[0], dp[1])
+
+    return min(passing, key=passing_key)
+
+
+def single_run_line_xy(
+    dp: tuple[str, float],
+    buckets: list[str],
+    dcv: dict[tuple[str, float, str], list[float]],
+    *,
+    x_of_bucket: Callable[[str], float | None],
+) -> tuple[list[float], list[float], list[float]]:
+    """Accuracy line for one run; std is always 0."""
+    xs: list[float] = []
+    means: list[float] = []
+    stds: list[float] = []
+    for b in buckets:
+        x = x_of_bucket(b)
+        if x is None:
+            continue
+        vals = dcv.get((dp[0], dp[1], b), [])
+        if not vals:
+            continue
+        xs.append(float(x))
+        means.append(max(vals) * 100.0)
+        stds.append(0.0)
+    return xs, means, stds
+
+
 def max_line_xy_by_bin_index(
     pruned: set[tuple[str, float]],
     all_bin_indices: list[int],

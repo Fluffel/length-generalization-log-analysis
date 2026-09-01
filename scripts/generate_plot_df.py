@@ -9,8 +9,10 @@ This script keeps plot aesthetics and legend naming consistent with
 * ``--query "expr"``               -> ``df.query(expr)``
 * ``--exclude-query "expr"``       -> ``df[~df.query(expr).index]``
 
-Groups are built from ``--group-by`` columns and plotted via their max-winner
-datapoints per validation bin (same winner logic as ``generate_plot.py``).
+Groups are built from ``--group-by`` columns. ``--max-aggregation`` chooses how
+each group becomes a line: ``max`` plots one run (smallest model at the
+accuracy threshold on every bin, else weighted-sum winner), ``pareto_mean``
+averages Pareto max-winners, and ``bin_max`` takes a per-bin max.
 
 The summary CSV holds one row per run with its validation bins side by side
 (``bin1_range``/``bin1_acc``, …); it is exploded into one row per (run, bin) on
@@ -70,6 +72,8 @@ from plot_utils import (
     max_line_xy_for_winners,
     select_max_winners_by_bin_index,
     select_max_winners_for_series,
+    select_max_run,
+    single_run_line_xy,
     _remap_rows_to_ordinal_bins,
 )
 from dataframe_query_utils import (
@@ -141,6 +145,8 @@ def _prepare_task_plot(
     group_label_mode: str,
     group_custom_labels: list[str],
     max_aggregation: str,
+    max_bin_weight: float,
+    max_acc_threshold: float,
     x_ticks_mode: str,
     x_tick_step: int,
     x_axis_break: str | None,
@@ -322,6 +328,10 @@ def _prepare_task_plot(
 
     # Modes:
     # - pareto_mean: keep Pareto max-contributor datapoints, then mean+std per bin.
+    # - max: one run per group. If any run is >= max_acc_threshold on every
+    #   selected bin, keep the smallest of those (layers, then d_model, then
+    #   heads). Otherwise weighted sum of bin accuracies (later bins more:
+    #   1, 1.1, 1.2, ... when max_bin_weight=1.1).
     # - bin_max: simple maximum per bin across all datapoints in the group/sub-series.
     max_series: dict[tuple[str, frozenset[str]], tuple[str, list[float], list[float], list[float]]] = {}
     for sk in sub_keys:
@@ -368,6 +378,26 @@ def _prepare_task_plot(
                     local_dcv,
                     fallback_dps=datapoints,
                 )
+        elif max_aggregation == "max":
+            buckets_sl = series_buckets(sk)
+            if not buckets_sl:
+                continue
+            local_dcv = series_to_dcv.get(sk, {})
+            winner = select_max_run(
+                datapoints,
+                local_dcv,
+                buckets_sl,
+                weight_factor=max_bin_weight,
+                accuracy_threshold=max_acc_threshold,
+            )
+            if winner is None:
+                continue
+            mx, mmean, mstd = single_run_line_xy(
+                winner,
+                buckets_sl,
+                local_dcv,
+                x_of_bucket=lambda b, _sk=sk: bucket_x(_sk, b),
+            )
         else:  # bin_max
             buckets_sl = series_buckets(sk)
             if not buckets_sl:
@@ -542,6 +572,8 @@ def plot_tasks_df(
     group_label_mode: str,
     group_custom_labels: list[str],
     max_aggregation: str,
+    max_bin_weight: float,
+    max_acc_threshold: float,
     x_ticks_mode: str,
     x_tick_step: int,
     x_axis_break: str | None,
@@ -577,6 +609,8 @@ def plot_tasks_df(
             group_label_mode=group_label_mode,
             group_custom_labels=group_custom_labels,
             max_aggregation=max_aggregation,
+            max_bin_weight=max_bin_weight,
+            max_acc_threshold=max_acc_threshold,
             x_ticks_mode=x_ticks_mode,
             x_tick_step=x_tick_step,
             x_axis_break=x_axis_break,
@@ -626,6 +660,8 @@ def plot_task_df(
     group_label_mode: str,
     group_custom_labels: list[str],
     max_aggregation: str,
+    max_bin_weight: float = 1.1,
+    max_acc_threshold: float = 0.98,
     x_ticks_mode: str,
     x_tick_step: int,
     x_axis_break: str | None,
@@ -645,6 +681,8 @@ def plot_task_df(
         group_label_mode=group_label_mode,
         group_custom_labels=group_custom_labels,
         max_aggregation=max_aggregation,
+        max_bin_weight=max_bin_weight,
+        max_acc_threshold=max_acc_threshold,
         x_ticks_mode=x_ticks_mode,
         x_tick_step=x_tick_step,
         x_axis_break=x_axis_break,
@@ -832,10 +870,34 @@ def main() -> int:
         choices=("pareto_mean", "bin_max", "mean", "max"),
         default="pareto_mean",
         help=(
-            "How to compute grouped max series: "
+            "How to compute grouped series: "
             "pareto_mean = Pareto winner selection, then mean+std over winner runs; "
-            "bin_max = direct maximum within each bin across all grouped datapoints. "
-            "Aliases: mean->pareto_mean, max->bin_max."
+            "max = one run per group: smallest model that is at least "
+            "--max-acc-threshold on every selected bin (layers, then d_model, "
+            "then heads), else the weighted-sum winner (later bins weighted more); "
+            "bin_max = per-bin maximum across grouped datapoints (may mix runs). "
+            "Alias: mean->pareto_mean."
+        ),
+    )
+    parser.add_argument(
+        "--max-bin-weight",
+        type=float,
+        default=1.1,
+        metavar="W",
+        help=(
+            "Weight factor for --max-aggregation max. Bin i (0-based, smallest first) "
+            "gets weight 1 + i*(W-1). Default 1.1 yields 1, 1.1, 1.2, ..."
+        ),
+    )
+    parser.add_argument(
+        "--max-acc-threshold",
+        type=float,
+        default=0.98,
+        metavar="T",
+        help=(
+            "Accuracy threshold for --max-aggregation max. A run that is at least T "
+            "on every selected bin qualifies; among those, the smallest model is "
+            "plotted (layers, then embedding dim, then heads). Default: 0.98."
         ),
     )
     parser.add_argument(
@@ -945,8 +1007,10 @@ def main() -> int:
         raise SystemExit("--group-custom-labels is only valid with --group-label-mode custom.")
     if args.max_aggregation == "mean":
         args.max_aggregation = "pareto_mean"
-    elif args.max_aggregation == "max":
-        args.max_aggregation = "bin_max"
+    if args.max_bin_weight <= 0:
+        raise SystemExit("--max-bin-weight must be > 0.")
+    if not 0.0 <= args.max_acc_threshold <= 1.0:
+        raise SystemExit("--max-acc-threshold must be in [0, 1].")
 
     multitask = _parse_custom_group_labels(args.multitask)
     if multitask and args.task:
@@ -1017,6 +1081,8 @@ def main() -> int:
         group_label_mode=args.group_label_mode,
         group_custom_labels=custom_labels,
         max_aggregation=args.max_aggregation,
+        max_bin_weight=args.max_bin_weight,
+        max_acc_threshold=args.max_acc_threshold,
         x_ticks_mode=args.x_ticks_mode,
         x_tick_step=args.x_tick_step,
         x_axis_break=args.x_axis_break,

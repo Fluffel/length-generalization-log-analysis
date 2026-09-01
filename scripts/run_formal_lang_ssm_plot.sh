@@ -36,7 +36,8 @@ for TASK in "${tasks[@]}"; do
         --output "site/plots/ssm/formal/${TASK}.svg" \
         --csv summary.csv \
         --legend-loc "lower left" \
-        --num-bins 3 \
+        --max-aggregation max \
+        --first-bins 3 \
         --merge-bins
     status=$?
     if [[ $status -eq 3 ]]; then
