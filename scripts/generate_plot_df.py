@@ -12,7 +12,8 @@ This script keeps plot aesthetics and legend naming consistent with
 Groups are built from ``--group-by`` columns. ``--max-aggregation`` chooses how
 each group becomes a line: ``max`` plots one run (smallest model at the
 accuracy threshold on every bin, else weighted-sum winner), ``pareto_mean``
-averages Pareto max-winners, and ``bin_max`` takes a per-bin max.
+averages Pareto max-winners, and ``bin_max`` takes a per-bin max. Legend labels
+are generated only after that selection, from the runs that are actually drawn.
 
 The summary CSV holds one row per run with its validation bins side by side
 (``bin1_range``/``bin1_acc``, …); it is exploded into one row per (run, bin) on
@@ -115,6 +116,81 @@ def _group_label_from_sid(sid: str, fallback: str) -> str:
     if sid.startswith("grp:"):
         return sid[len("grp:") :]
     return fallback
+
+
+def _rows_matching_datapoints(
+    rows: list[dict], datapoints: set[tuple[str, float]]
+) -> list[dict]:
+    return [
+        r
+        for r in rows
+        if (str(r["model"]), float(r["learning_rate"])) in datapoints
+    ]
+
+
+def _datapoints_at_bin_max(
+    datapoints: set[tuple[str, float]],
+    buckets: list[str],
+    dcv: dict[tuple[str, float, str], list[float]],
+) -> set[tuple[str, float]]:
+    """Datapoints whose value is the per-bin maximum on at least one bin."""
+    out: set[tuple[str, float]] = set()
+    for b in buckets:
+        best: float | None = None
+        present: list[tuple[tuple[str, float], float]] = []
+        for dp in datapoints:
+            vals = dcv.get((dp[0], dp[1], b), [])
+            if not vals:
+                continue
+            acc = max(vals)
+            present.append((dp, acc))
+            if best is None or acc > best:
+                best = acc
+        if best is None:
+            continue
+        for dp, acc in present:
+            if acc == best:
+                out.add(dp)
+    return out if out else set(datapoints)
+
+
+def _series_display_labels(
+    plotted_keys: list[tuple[str, frozenset[str]]],
+    *,
+    plotted_dps: dict[tuple[str, frozenset[str]], set[tuple[str, float]]],
+    sub_series_rows: dict[tuple[str, frozenset[str]], list[dict]],
+    group_label_mode: str,
+    sid_to_custom_label: dict[str, str],
+    merge_bins: bool,
+) -> dict[tuple[str, frozenset[str]], str]:
+    """Legend text from the runs that were selected to draw, not the full group."""
+    sig_count_by_sid: dict[str, int] = defaultdict(int)
+    for sid, _sig in plotted_keys:
+        sig_count_by_sid[sid] += 1
+
+    display_labels: dict[tuple[str, frozenset[str]], str] = {}
+    for sk in plotted_keys:
+        sid, sig = sk
+        model_label = legend_label_from_rows(
+            _rows_matching_datapoints(sub_series_rows[sk], plotted_dps[sk])
+        )
+        if group_label_mode == "model":
+            base = model_label
+        elif group_label_mode == "group":
+            base = _group_label_from_sid(sid, model_label)
+        else:
+            base = sid_to_custom_label.get(sid, model_label)
+        if merge_bins or sig_count_by_sid[sid] <= 1:
+            display_labels[sk] = base
+        else:
+            display_labels[sk] = f"{base} [{signature_layout_label(sig)}]"
+
+    id_strs = [f"{sid}::{_signature_label(sig)}" for sid, sig in plotted_keys]
+    deduped = _dedupe_legend_labels(
+        id_strs,
+        {id_strs[i]: display_labels[plotted_keys[i]] for i in range(len(plotted_keys))},
+    )
+    return {plotted_keys[i]: deduped[id_strs[i]] for i in range(len(plotted_keys))}
 
 
 def _parse_plot_size(raw: str | None) -> tuple[float, float] | None:
@@ -253,31 +329,6 @@ def _prepare_task_plot(
     if not sub_keys:
         raise NoDataForTask(f"No sub-series to plot for task={task!r}.")
 
-    base_labels = {sk: legend_label_from_rows(sub_series_rows[sk]) for sk in sub_keys}
-    sig_count_by_sid: dict[str, int] = defaultdict(int)
-    for sid, _sig in sub_keys:
-        sig_count_by_sid[sid] += 1
-
-    display_labels: dict[tuple[str, frozenset[str]], str] = {}
-    for sk in sub_keys:
-        sid, sig = sk
-        if group_label_mode == "model":
-            base = base_labels[sk]
-        elif group_label_mode == "group":
-            base = _group_label_from_sid(sid, base_labels[sk])
-        else:  # custom
-            base = sid_to_custom_label.get(sid, base_labels[sk])
-        if merge_bins or sig_count_by_sid[sid] <= 1:
-            display_labels[sk] = base
-        else:
-            display_labels[sk] = f"{base} [{signature_layout_label(sig)}]"
-
-    id_strs = [f"{sid}::{_signature_label(sig)}" for sid, sig in sub_keys]
-    deduped = _dedupe_legend_labels(
-        id_strs, {id_strs[i]: display_labels[sub_keys[i]] for i in range(len(sub_keys))}
-    )
-    sub_key_to_display = {sub_keys[i]: deduped[id_strs[i]] for i in range(len(sub_keys))}
-
     series_to_bucket_vals: dict[tuple[tuple[str, frozenset[str]], str], list[float]] = defaultdict(list)
     series_to_datapoints: dict[tuple[str, frozenset[str]], set[tuple[str, float]]] = defaultdict(set)
     series_to_dcv: dict[
@@ -333,9 +384,10 @@ def _prepare_task_plot(
     #   heads). Otherwise weighted sum of bin accuracies (later bins more:
     #   1, 1.1, 1.2, ... when max_bin_weight=1.1).
     # - bin_max: simple maximum per bin across all datapoints in the group/sub-series.
-    max_series: dict[tuple[str, frozenset[str]], tuple[str, list[float], list[float], list[float]]] = {}
+    # Legend labels are assigned after this selection, from plotted runs only.
+    series_xy: dict[tuple[str, frozenset[str]], tuple[list[float], list[float], list[float]]] = {}
+    series_plotted_dps: dict[tuple[str, frozenset[str]], set[tuple[str, float]]] = {}
     for sk in sub_keys:
-        max_label = f"{sub_key_to_display[sk]}"
         datapoints = series_to_datapoints.get(sk, set())
         if not datapoints:
             continue
@@ -343,6 +395,7 @@ def _prepare_task_plot(
         mx: list[float]
         mmean: list[float]
         mstd: list[float]
+        plotted: set[tuple[str, float]]
         if max_aggregation == "pareto_mean":
             if merge_bins:
                 buckets_sl = series_buckets(sk)
@@ -378,6 +431,7 @@ def _prepare_task_plot(
                     local_dcv,
                     fallback_dps=datapoints,
                 )
+            plotted = set(pruned)
         elif max_aggregation == "max":
             buckets_sl = series_buckets(sk)
             if not buckets_sl:
@@ -398,10 +452,12 @@ def _prepare_task_plot(
                 local_dcv,
                 x_of_bucket=lambda b, _sk=sk: bucket_x(_sk, b),
             )
+            plotted = {winner}
         else:  # bin_max
             buckets_sl = series_buckets(sk)
             if not buckets_sl:
                 continue
+            local_dcv = series_to_dcv.get(sk, {})
             mx, mmean, mstd = [], [], []
             for b in buckets_sl:
                 x = bucket_x(sk, b)
@@ -413,10 +469,26 @@ def _prepare_task_plot(
                 mx.append(float(x))
                 mmean.append(max(vals) * 100.0)
                 mstd.append(0.0)
+            plotted = _datapoints_at_bin_max(datapoints, buckets_sl, local_dcv)
 
         if use_bins:
             mx = [float(i) for i in range(len(mx))]
-        max_series[sk] = (max_label, mx, mmean, mstd)
+        series_xy[sk] = (mx, mmean, mstd)
+        series_plotted_dps[sk] = plotted
+
+    plotted_keys = [sk for sk in sub_keys if sk in series_xy]
+    sub_key_to_display = _series_display_labels(
+        plotted_keys,
+        plotted_dps=series_plotted_dps,
+        sub_series_rows=sub_series_rows,
+        group_label_mode=group_label_mode,
+        sid_to_custom_label=sid_to_custom_label,
+        merge_bins=merge_bins,
+    )
+    max_series: dict[tuple[str, frozenset[str]], tuple[str, list[float], list[float], list[float]]] = {
+        sk: (sub_key_to_display[sk], mx, mmean, mstd)
+        for sk, (mx, mmean, mstd) in series_xy.items()
+    }
 
     x_max_data = float(max(x_tick_ends))
     if use_bins:
@@ -849,8 +921,9 @@ def main() -> int:
         choices=("model", "group", "custom"),
         default="model",
         help=(
-            "Legend base label mode per group: "
-            "model (existing compact model label), "
+            "Legend base label mode per group, applied after aggregation "
+            "selects the runs that are drawn: "
+            "model (compact spec of plotted runs only), "
             "group (column=value pairs from --group-by), "
             "custom (labels from --group-custom-labels)."
         ),
