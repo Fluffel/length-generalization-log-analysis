@@ -41,7 +41,7 @@ jobs:
           pip install pandas matplotlib seaborn
 
       - name: Generate summary CSV
-        run: python scripts/generate_summary_csv.py --num-bins 3 --csv summary.csv
+        run: python scripts/generate_summary_csv.py --csv summary.csv
 
       - name: Generate SSM plots
         run: python scripts/update_ssm_plots.py --arch olmossm
