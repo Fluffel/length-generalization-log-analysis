@@ -30,6 +30,7 @@ for TASK in "${tasks[@]}"; do
         --output "site/plots/ssm/tasks/${TASK}.svg" \
         --csv summary.csv \
         --legend-loc "lower left" \
+        --max-aggregation max \
         --num-bins 3 \
         --merge-bins
     status=$?

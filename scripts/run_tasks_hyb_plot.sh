@@ -30,6 +30,7 @@ for TASK in "${tasks[@]}"; do
         --output "site/plots/hyb/tasks/${TASK}.svg" \
         --csv summary.csv \
         --legend-loc "lower left" \
+        --max-aggregation max \
         --num-bins 3 \
         --merge-bins
     status=$?
