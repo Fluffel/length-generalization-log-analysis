@@ -44,7 +44,10 @@ jobs:
         run: python scripts/generate_summary_csv.py --csv summary.csv
 
       - name: Generate SSM plots
-        run: python scripts/update_ssm_plots.py --arch olmossm
+        run: python scripts/update_plots.py --arch ssm
+
+      - name: Generate Hybrid plots
+        run: python scripts/update_plots.py --arch hyb
 
       - name: Check every published plot came from this run
         # Second line of defence behind update_ssm_plots.py: the artifact must

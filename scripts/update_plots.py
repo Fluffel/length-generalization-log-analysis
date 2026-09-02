@@ -293,6 +293,10 @@ def render_page(
         panels="\n".join(_render_panel(p, html_dir) for p in panels),
     )
 
+SCRIPT_FILES = {"ssm": {"formal": "run_formal_lang_ssm_plot.sh",
+                        "tasks": "run_tasks_ssm_plot.sh"},
+                "hyb": {"formal": "run_formal_lang_hyb_plot.sh",
+                        "tasks": "run_tasks_hyb_plot.sh"}}
 
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -307,7 +311,7 @@ def main() -> int:
         "--arch",
         required=True,
         help="Architecture to highlight, matched against the CSV arch column "
-        "(e.g. ssm, olmossm, hyb, lm).",
+        "(e.g. ssm, hyb, lm).",
     )
     parser.add_argument(
         "--columns",
@@ -357,16 +361,17 @@ def main() -> int:
     if not 0 <= threshold < 1:
         raise SystemExit("--threshold must be a fraction in [0, 1) or a percentage.")
 
+    script_files = SCRIPT_FILES[args.arch]
     scripts = [
         parse_plot_script(
-            SCRIPT_DIR / "run_formal_lang_ssm_plot.sh",
+            SCRIPT_DIR / script_files["formal"],
             name="formal",
-            title="Formal languages — SSM plots",
+            title=f"Formal languages — {args.arch} plots",
         ),
         parse_plot_script(
-            SCRIPT_DIR / "run_tasks_ssm_plot.sh",
+            SCRIPT_DIR / script_files["tasks"],
             name="tasks",
-            title="Algorithmic tasks — SSM plots",
+            title=f"Algorithmic tasks — {args.arch} plots",
         ),
     ]
 
