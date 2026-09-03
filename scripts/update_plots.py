@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Regenerate the SSM plots and summarise them in two HTML contact sheets.
+"""Regenerate plots and summarise them in HTML contact sheets.
 
-Runs ``run_formal_lang_ssm_plot.sh`` and ``run_tasks_ssm_plot.sh`` (each writes
-one SVG per task into its own folder), then writes one HTML page per group that
-lays those SVGs out in a grid of ``--columns`` columns.
+Runs the ``run_*_plot.sh`` scripts for ``--arch`` (each writes one SVG per task),
+then writes one HTML page per group that lays those SVGs out in a grid of
+``--columns`` columns.
 
-A panel gets a green border when the architecture given via ``--arch`` has at
-least one run whose accuracy exceeds ``--threshold`` in *every* validation bin;
-the qualifying models are listed under the plot.  Task lists, plot paths, the
-summary CSV and the bin count are read out of the shell scripts, so the HTML
-always describes exactly what was plotted.
+Each panel lists the models that appear in that graph's legend — the same
+selection ``generate_plot_df.py`` used to draw the SVG — with that run's
+accuracy in every plotted bin.  A panel gets a green border when at least one
+of those plotted series stays at or above ``--threshold`` in every bin.  Keep
+filters, bin trimming and grouping are read from the shell scripts, so the
+HTML always describes exactly what was plotted.
 """
 
 from __future__ import annotations
@@ -25,7 +26,9 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from plot_utils import load_summary_dataframe
+from dataframe_query_utils import apply_keep_remove_filters
+from generate_plot_df import NoDataForTask, _prepare_task_plot
+from plot_utils import BinFilter, load_summary_dataframe
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parents[0]
@@ -47,7 +50,14 @@ class PlotScript:
     tasks: list[str]
     plot_template: str  # path with ${TASK} placeholder, relative to the repo root
     csv_path: Path
+    keep: list[str]
+    group_by: list[str]
+    max_aggregation: str
+    max_acc_threshold: float
+    max_bin_weight: float
     num_bins: int | None
+    first_bins: int | None
+    merge_bins: bool
 
     def plot_path(self, task: str) -> Path:
         rel = self.plot_template
@@ -57,24 +67,69 @@ class PlotScript:
 
 
 @dataclass(frozen=True)
+class PlottedSeries:
+    """One legend entry: the run(s) actually drawn, with per-bin accuracy."""
+
+    label: str
+    bin_labels: tuple[str, ...]
+    accuracies: tuple[float, ...]  # fractions in [0, 1], one per plotted bin
+
+    def passes(self, threshold: float) -> bool:
+        return bool(self.accuracies) and all(acc >= threshold for acc in self.accuracies)
+
+
+@dataclass(frozen=True)
 class Panel:
-    """One task's plot plus the architecture's qualifying runs for it."""
+    """One task's plot plus the series shown in its legend."""
 
     task: str
     plot_path: Path
-    models: list[tuple[str, float]]
+    series: list[PlottedSeries]
+    threshold: float
 
     @property
     def highlighted(self) -> bool:
-        return bool(self.models)
+        return any(s.passes(self.threshold) for s in self.series)
+
+
+_FLAG_VALUE_RE = r"[=\s]+(?:\"([^\"]*)\"|'([^']*)'|(\S+))"
 
 
 def _flag_value(text: str, flag: str) -> str | None:
     """Value of ``--flag value`` / ``--flag=value`` in a shell script."""
-    m = re.search(rf"{re.escape(flag)}[=\s]+(?:\"([^\"]*)\"|'([^']*)'|(\S+))", text)
+    m = re.search(rf"{re.escape(flag)}{_FLAG_VALUE_RE}", text)
     if not m:
         return None
     return next(g for g in m.groups() if g is not None)
+
+
+def _flag_values(text: str, flag: str) -> list[str]:
+    """Every ``--flag value`` occurrence, in order."""
+    values: list[str] = []
+    for groups in re.findall(rf"{re.escape(flag)}{_FLAG_VALUE_RE}", text):
+        values.append(next(g for g in groups if g))
+    return values
+
+
+def _has_flag(text: str, flag: str) -> bool:
+    return re.search(rf"(?:^|\s){re.escape(flag)}(?:\s|$)", text) is not None
+
+
+def _optional_int_flag(text: str, flag: str) -> int | None:
+    raw = _flag_value(text, flag)
+    if raw is None or not raw.isdigit():
+        return None
+    return int(raw)
+
+
+def _optional_float_flag(text: str, flag: str, default: float) -> float:
+    raw = _flag_value(text, flag)
+    if raw is None:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
 
 
 def _parse_task_array(text: str, script: Path) -> list[str]:
@@ -108,7 +163,11 @@ def parse_plot_script(path: Path, *, name: str, title: str) -> PlotScript:
         )
 
     csv_value = _flag_value(text, "--csv") or "summary.csv"
-    num_bins_value = _flag_value(text, "--num-bins")
+    keep = _flag_values(text, "--keep")
+    group_by = _flag_values(text, "--group-by")
+    max_aggregation = _flag_value(text, "--max-aggregation") or "max"
+    if max_aggregation == "mean":
+        max_aggregation = "pareto_mean"
 
     return PlotScript(
         name=name,
@@ -117,7 +176,14 @@ def parse_plot_script(path: Path, *, name: str, title: str) -> PlotScript:
         tasks=_parse_task_array(text, path),
         plot_template=template,
         csv_path=(REPO_ROOT / csv_value).resolve(),
-        num_bins=int(num_bins_value) if num_bins_value and num_bins_value.isdigit() else None,
+        keep=keep,
+        group_by=group_by,
+        max_aggregation=max_aggregation,
+        max_acc_threshold=_optional_float_flag(text, "--max-acc-threshold", 0.98),
+        max_bin_weight=_optional_float_flag(text, "--max-bin-weight", 1.1),
+        num_bins=_optional_int_flag(text, "--num-bins"),
+        first_bins=_optional_int_flag(text, "--first-bins"),
+        merge_bins=_has_flag(text, "--merge-bins"),
     )
 
 
@@ -147,50 +213,89 @@ def stale_plots(script: PlotScript, *, newer_than: float) -> list[str]:
     ]
 
 
-def qualifying_runs(
-    df,
-    *,
-    task: str,
-    arch: str,
-    threshold: float,
-    num_bins: int | None,
-) -> list[tuple[str, float]]:
-    """Models of *arch* that stay above *threshold* in every bin, worst bin first.
+def script_bin_filter(script: PlotScript, *, num_bins: int | None) -> BinFilter:
+    """The same run/bin selection the plot script applies before drawing."""
+    counts: frozenset[int] = frozenset()
+    n = num_bins if num_bins is not None else script.num_bins
+    if n is not None:
+        counts = frozenset({n})
+    return BinFilter(bin_counts=counts, first_bins=script.first_bins)
 
-    A run qualifies on its own: the minimum over its bins must exceed the
-    threshold, so a model that is strong on short inputs only never counts.
-    """
-    sub = df[(df["task"].astype(str) == task) & (df["arch"].astype(str) == arch)]
-    if num_bins is not None and "num_bins" in sub.columns:
-        sub = sub[sub["num_bins"].astype(int) == num_bins]
+
+def filter_summary_for_script(df, script: PlotScript, *, num_bins: int | None):
+    """Apply the plot script's ``--keep`` and bin filters to a long-form summary."""
+    df = apply_keep_remove_filters(df, script.keep, [])
+    return script_bin_filter(script, num_bins=num_bins).apply(df)
+
+
+def _bin_labels_for_series(prepared: dict, xs: list[float]) -> tuple[str, ...]:
+    if prepared.get("use_bins"):
+        ticks = prepared.get("ordinal_tick_labels") or []
+        labels: list[str] = []
+        for x in xs:
+            idx = int(round(x))
+            if 0 <= idx < len(ticks):
+                labels.append(str(ticks[idx]))
+            else:
+                labels.append(f"bin{idx + 1}")
+        return tuple(labels)
+    return tuple(str(int(x)) if float(x).is_integer() else f"{x:g}" for x in xs)
+
+
+def plotted_series_for_task(df, script: PlotScript, task: str) -> list[PlottedSeries]:
+    """Legend entries for *task*, using the same selection as the SVG."""
+    sub = df[df["task"].astype(str) == task] if "task" in df.columns else df
     if sub.empty:
         return []
+    try:
+        prepared = _prepare_task_plot(
+            sub,
+            task=task,
+            group_by=script.group_by,
+            group_label_mode="model",
+            group_custom_labels=[],
+            max_aggregation=script.max_aggregation,
+            max_bin_weight=script.max_bin_weight,
+            max_acc_threshold=script.max_acc_threshold,
+            x_ticks_mode="bins",
+            x_tick_step=10,
+            x_axis_break=None,
+            num_bins=None,  # already applied via BinFilter
+            merge_bins=script.merge_bins,
+        )
+    except NoDataForTask:
+        return []
 
-    best: dict[str, float] = {}
-    for _run_id, run_rows in sub.groupby("run_id", sort=False):
-        worst_bin = float(run_rows["accuracy"].min())
-        if worst_bin <= threshold:
+    series: list[PlottedSeries] = []
+    max_series = prepared["max_series"]
+    for sk in prepared["sub_keys"]:
+        if sk not in max_series:
             continue
-        model = str(run_rows["model"].iloc[0])
-        best[model] = max(best.get(model, 0.0), worst_bin)
-    return sorted(best.items(), key=lambda kv: (-kv[1], kv[0]))
+        label, xs, means, _stds = max_series[sk]
+        series.append(
+            PlottedSeries(
+                label=label,
+                bin_labels=_bin_labels_for_series(prepared, xs),
+                accuracies=tuple(m / 100.0 for m in means),
+            )
+        )
+    return series
 
 
 def build_panels(
     df,
     script: PlotScript,
     *,
-    arch: str,
     threshold: float,
     num_bins: int | None,
 ) -> list[Panel]:
+    filtered = filter_summary_for_script(df, script, num_bins=num_bins)
     return [
         Panel(
             task=task,
             plot_path=script.plot_path(task),
-            models=qualifying_runs(
-                df, task=task, arch=arch, threshold=threshold, num_bins=num_bins
-            ),
+            series=plotted_series_for_task(filtered, script, task),
+            threshold=threshold,
         )
         for task in script.tasks
     ]
@@ -215,8 +320,10 @@ _PAGE_TEMPLATE = """<!DOCTYPE html>
   .panel.pass {{ border-color: #2e7d32; background: #f3fbf4; }}
   .panel h2 {{ font-size: 1rem; margin: 0 0 0.5rem; }}
   .panel img {{ width: 100%; height: auto; display: block; }}
-  .models {{ font-size: 0.8rem; color: #2e7d32; margin-top: 0.5rem;
-             word-break: break-all; line-height: 1.5; }}
+  .models {{ font-size: 0.8rem; color: #444; margin: 0.5rem 0 0;
+             padding-left: 1.15rem; word-break: break-all; line-height: 1.5; }}
+  .models li {{ margin: 0.15rem 0; }}
+  .panel.pass .models {{ color: #2e7d32; }}
   .missing {{ font-size: 0.9rem; color: #b71c1c; padding: 2rem 0; text-align: center; }}
 </style>
 </head>
@@ -233,7 +340,14 @@ _PAGE_TEMPLATE = """<!DOCTYPE html>
 """
 
 
-MAX_LISTED_MODELS = 5
+def _format_series_caption(series: PlottedSeries) -> str:
+    bins = ", ".join(
+        f"{html.escape(label)} {acc * 100:.1f}%"
+        for label, acc in zip(series.bin_labels, series.accuracies, strict=False)
+    )
+    if not bins:
+        return html.escape(series.label)
+    return f"{html.escape(series.label)} ({bins})"
 
 
 def _render_panel(panel: Panel, html_dir: Path) -> str:
@@ -249,17 +363,24 @@ def _render_panel(panel: Panel, html_dir: Path) -> str:
         parts.append(f'<img src="{src}?v={version}" alt="{task}">')
     else:
         parts.append('<div class="missing">no plot generated</div>')
-    if panel.models:
-        shown = panel.models[:MAX_LISTED_MODELS]
-        listed = ", ".join(
-            f"{html.escape(model)} ({worst * 100:.1f}%)" for model, worst in shown
+    if panel.series:
+        items = "".join(
+            f"<li>{_format_series_caption(s)}</li>" for s in panel.series
         )
-        if len(panel.models) > len(shown):
-            listed += f", +{len(panel.models) - len(shown)} more"
-        parts.append(f'<div class="models">{listed}</div>')
+        parts.append(f'<ul class="models">{items}</ul>')
     classes = "panel pass" if panel.highlighted else "panel"
     body = "\n    ".join(parts)
     return f'  <div class="{classes}">\n    {body}\n  </div>'
+
+
+def _bins_note(script: PlotScript, num_bins: int | None) -> str:
+    n = num_bins if num_bins is not None else script.num_bins
+    parts: list[str] = []
+    if n is not None:
+        parts.append(f"{n} bins")
+    if script.first_bins is not None:
+        parts.append(f"first {script.first_bins} bins")
+    return ", ".join(parts) if parts else "all bin counts"
 
 
 def render_page(
@@ -274,14 +395,14 @@ def render_page(
 ) -> str:
     passed = sum(1 for p in panels if p.highlighted)
     missing = sum(1 for p in panels if not p.plot_path.exists())
-    bins_note = f"{num_bins} bins" if num_bins is not None else "all bin counts"
     meta_lines = [
-        f"<span class='legend-dot'></span> green border: "
-        f"<strong>{html.escape(arch)}</strong> has a run above "
-        f"{threshold * 100:.1f}% in every validation bin "
+        f"<span class='legend-dot'></span> green border: a plotted "
+        f"<strong>{html.escape(arch)}</strong> series is at or above "
+        f"{threshold * 100:.1f}% in every shown bin "
         f"({passed} of {len(panels)} tasks).",
+        "Captions list the models in each graph's legend, with accuracy per bin.",
         f"Source: {html.escape(str(script.csv_path.relative_to(REPO_ROOT)))}, "
-        f"{bins_note}, plots from {html.escape(script.path.name)}.",
+        f"{_bins_note(script, num_bins)}, plots from {html.escape(script.path.name)}.",
         f"Generated {datetime.now().strftime('%Y-%m-%d %H:%M')}.",
     ]
     if missing:
@@ -301,17 +422,18 @@ SCRIPT_FILES = {"ssm": {"formal": "run_formal_lang_ssm_plot.sh",
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Regenerate the formal-language and task SSM plots, then write one "
-            "HTML overview per group with the plots side by side. Plots where the "
-            "given architecture exceeds the accuracy threshold in every "
-            "validation bin get a green border."
+            "Regenerate the formal-language and task plots, then write one "
+            "HTML overview per group with the plots side by side. Captions list "
+            "the models in each graph's legend; panels where a plotted series "
+            "stays at or above the accuracy threshold in every bin get a green "
+            "border."
         )
     )
     parser.add_argument(
         "--arch",
         required=True,
-        help="Architecture to highlight, matched against the CSV arch column "
-        "(e.g. ssm, hyb, lm).",
+        help="Which plot scripts to run (ssm or hyb). Architecture filters "
+        "come from each script's --keep flag, not this name alone.",
     )
     parser.add_argument(
         "--columns",
@@ -345,7 +467,7 @@ def main() -> int:
         "--num-bins",
         type=int,
         default=None,
-        help="Bin count a run must have to be checked (default: the --num-bins "
+        help="Bin count a run must have to be plotted (default: the --num-bins "
         "value of each shell script).",
     )
     parser.add_argument(
@@ -396,17 +518,19 @@ def main() -> int:
 
     for script in scripts:
         csv_path = args.csv or script.csv_path
-        num_bins = args.num_bins if args.num_bins is not None else script.num_bins
+        num_bins = args.num_bins if args.num_bins is not None else None
         df = load_summary_dataframe(csv_path)
-        if args.arch not in set(df["arch"].astype(str)):
+        filtered = filter_summary_for_script(df, script, num_bins=num_bins)
+        if filtered.empty:
+            keep = ", ".join(script.keep) if script.keep else "no --keep"
             available = ", ".join(sorted(set(df["arch"].astype(str))))
             print(
-                f"Warning: arch={args.arch!r} does not occur in {csv_path}; "
-                f"nothing will be highlighted. Available: {available}"
+                f"Warning: no rows left for {script.path.name} after {keep}; "
+                f"available arch values: {available}"
             )
 
         panels = build_panels(
-            df, script, arch=args.arch, threshold=threshold, num_bins=num_bins
+            df, script, threshold=threshold, num_bins=num_bins
         )
         page = render_page(
             script,
