@@ -417,7 +417,9 @@ def render_page(
 SCRIPT_FILES = {"ssm": {"formal": "run_formal_lang_ssm_plot.sh",
                         "tasks": "run_tasks_ssm_plot.sh"},
                 "hyb": {"formal": "run_formal_lang_hyb_plot.sh",
-                        "tasks": "run_tasks_hyb_plot.sh"}}
+                        "tasks": "run_tasks_hyb_plot.sh"},
+                "lm": {"formal": "run_formal_lang_lm_plot.sh",
+                        "tasks": "run_tasks_lm_plot.sh"}}
 
 def main() -> int:
     parser = argparse.ArgumentParser(
@@ -432,7 +434,7 @@ def main() -> int:
     parser.add_argument(
         "--arch",
         required=True,
-        help="Which plot scripts to run (ssm or hyb). Architecture filters "
+        help="Which plot scripts to run (ssm or lm). Architecture filters "
         "come from each script's --keep flag, not this name alone.",
     )
     parser.add_argument(

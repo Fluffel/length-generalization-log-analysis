@@ -49,6 +49,9 @@ jobs:
       - name: Generate Hybrid plots
         run: python scripts/update_plots.py --arch hyb
 
+      - name: Generate LM plots
+        run: python scripts/update_plots.py --arch lm
+
       - name: Check every published plot came from this run
         # Second line of defence behind update_ssm_plots.py: the artifact must
         # never contain an SVG left over from the checkout.
