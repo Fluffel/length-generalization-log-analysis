@@ -1,0 +1,216 @@
+olmolm1l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.903		eval_len50-99_acc: 0.7365		eval_len100-149_acc: 0.7105		lr: 0.001
+olmolm1l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.918		eval_len50-99_acc: 0.7385		eval_len100-149_acc: 0.7075		lr: 0.001
+olmolm1l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.914		eval_len50-99_acc: 0.7415		eval_len100-149_acc: 0.709		lr: 0.001
+olmolm1l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.6935		eval_len50-99_acc: 0.5485		eval_len100-149_acc: 0.555		lr: 0.0001
+olmolm1l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7275		eval_len50-99_acc: 0.6225		eval_len100-149_acc: 0.4685		lr: 0.0001
+olmolm1l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7205		eval_len50-99_acc: 0.6325		eval_len100-149_acc: 0.458		lr: 0.0001
+olmolm1l2h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.8935		eval_len50-99_acc: 0.7335		eval_len100-149_acc: 0.697		lr: 0.001
+olmolm1l2h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9025		eval_len50-99_acc: 0.7305		eval_len100-149_acc: 0.7025		lr: 0.001
+olmolm1l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7455		eval_len50-99_acc: 0.657		eval_len100-149_acc: 0.636		lr: 0.0001
+olmolm1l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.75		eval_len50-99_acc: 0.664		eval_len100-149_acc: 0.6275		lr: 0.0001
+olmolm1l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7535		eval_len50-99_acc: 0.657		eval_len100-149_acc: 0.6295		lr: 0.0001
+olmolm1l2h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7195		eval_len50-99_acc: 0.6475		eval_len100-149_acc: 0.663		lr: 0.001
+olmolm1l2h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7535		eval_len50-99_acc: 0.691		eval_len100-149_acc: 0.616		lr: 0.001
+olmolm1l2h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.782		eval_len50-99_acc: 0.3235		eval_len100-149_acc: 0.0		lr: 0.001
+olmolm1l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7015		eval_len50-99_acc: 0.6		eval_len100-149_acc: 0.389		lr: 0.0001
+olmolm1l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.701		eval_len50-99_acc: 0.569		eval_len100-149_acc: 0.525		lr: 0.0001
+olmolm1l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7195		eval_len50-99_acc: 0.4315		eval_len100-149_acc: 0.0		lr: 0.0001
+olmolm1l2h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7085		eval_len50-99_acc: 0.637		eval_len100-149_acc: 0.669		lr: 0.001
+olmolm1l2h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7035		eval_len50-99_acc: 0.6415		eval_len100-149_acc: 0.637		lr: 0.001
+olmolm1l2h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7245		eval_len50-99_acc: 0.625		eval_len100-149_acc: 0.6015		lr: 0.001
+olmolm1l2h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.919		eval_len50-99_acc: 0.662		eval_len100-149_acc: 0.559		lr: 0.0001
+olmolm1l2h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.925		eval_len50-99_acc: 0.669		eval_len100-149_acc: 0.451		lr: 0.0001
+olmolm1l2h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9375		eval_len50-99_acc: 0.6345		eval_len100-149_acc: 0.247		lr: 0.0001
+olmolm1l2h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.8185		eval_len50-99_acc: 0.558		eval_len100-149_acc: 0.445		lr: 0.001
+olmolm1l2h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9565		eval_len50-99_acc: 0.154		eval_len100-149_acc: 0.0025		lr: 0.001
+olmolm1l2h256d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7395		eval_len50-99_acc: 0.4725		eval_len100-149_acc: 0.3745		lr: 0.0001
+olmolm1l2h256d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9365		eval_len50-99_acc: 0.555		eval_len100-149_acc: 0.2435		lr: 0.0001
+olmolm1l2h256d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.958		eval_len50-99_acc: 0.3345		eval_len100-149_acc: 0.016		lr: 0.0001
+olmolm1l2h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7765		eval_len50-99_acc: 0.409		eval_len100-149_acc: 0.278		lr: 0.001
+olmolm1l2h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9565		eval_len50-99_acc: 0.271		eval_len100-149_acc: 0.2		lr: 0.001
+olmolm1l2h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.924		eval_len50-99_acc: 0.605		eval_len100-149_acc: 0.443		lr: 0.0001
+olmolm1l2h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.935		eval_len50-99_acc: 0.5905		eval_len100-149_acc: 0.446		lr: 0.0001
+olmolm1l2h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.977		eval_len50-99_acc: 0.4115		eval_len100-149_acc: 0.2355		lr: 0.0001
+olmolm1l4h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.871		eval_len50-99_acc: 0.591		eval_len100-149_acc: 0.5405		lr: 0.001
+olmolm1l4h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.871		eval_len50-99_acc: 0.5785		eval_len100-149_acc: 0.5535		lr: 0.001
+olmolm1l4h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9075		eval_len50-99_acc: 0.2475		eval_len100-149_acc: 0.0015		lr: 0.001
+olmolm1l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7955		eval_len50-99_acc: 0.4345		eval_len100-149_acc: 0.425		lr: 0.0001
+olmolm1l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.882		eval_len50-99_acc: 0.464		eval_len100-149_acc: 0.1075		lr: 0.0001
+olmolm1l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.909		eval_len50-99_acc: 0.2995		eval_len100-149_acc: 0.1365		lr: 0.0001
+olmolm1l4h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.895		eval_len50-99_acc: 0.647		eval_len100-149_acc: 0.6075		lr: 0.001
+olmolm1l4h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.899		eval_len50-99_acc: 0.6375		eval_len100-149_acc: 0.608		lr: 0.001
+olmolm1l4h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9135		eval_len50-99_acc: 0.5355		eval_len100-149_acc: 0.441		lr: 0.001
+olmolm1l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.871		eval_len50-99_acc: 0.466		eval_len100-149_acc: 0.434		lr: 0.0001
+olmolm1l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8725		eval_len50-99_acc: 0.485		eval_len100-149_acc: 0.432		lr: 0.0001
+olmolm1l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8985		eval_len50-99_acc: 0.3395		eval_len100-149_acc: 0.0		lr: 0.0001
+olmolm1l4h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.6755		eval_len50-99_acc: 0.5555		eval_len100-149_acc: 0.353		lr: 0.001
+olmolm1l4h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.981		eval_len50-99_acc: 0.815		eval_len100-149_acc: 0.2175		lr: 0.001
+olmolm1l4h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9895		eval_len50-99_acc: 0.8145		eval_len100-149_acc: 0.246		lr: 0.001
+olmolm1l4h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8765		eval_len50-99_acc: 0.5385		eval_len100-149_acc: 0.3745		lr: 0.0001
+olmolm1l4h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.893		eval_len50-99_acc: 0.589		eval_len100-149_acc: 0.371		lr: 0.0001
+olmolm1l4h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.984		eval_len50-99_acc: 0.3785		eval_len100-149_acc: 0.2735		lr: 0.0001
+olmolm1l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.954		eval_len50-99_acc: 0.782		eval_len100-149_acc: 0.2165		lr: 0.001
+olmolm1l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9645		eval_len50-99_acc: 0.782		eval_len100-149_acc: 0.2075		lr: 0.001
+olmolm1l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.965		eval_len50-99_acc: 0.782		eval_len100-149_acc: 0.2045		lr: 0.001
+olmolm1l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9765		eval_len50-99_acc: 0.7675		eval_len100-149_acc: 0.484		lr: 0.001
+olmolm1l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9865		eval_len50-99_acc: 0.722		eval_len100-149_acc: 0.4335		lr: 0.001
+olmolm1l4h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8915		eval_len50-99_acc: 0.5935		eval_len100-149_acc: 0.3825		lr: 0.0001
+olmolm1l4h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9025		eval_len50-99_acc: 0.5965		eval_len100-149_acc: 0.3635		lr: 0.0001
+olmolm1l4h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9835		eval_len50-99_acc: 0.3175		eval_len100-149_acc: 0.245		lr: 0.0001
+olmolm1l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.8965		eval_len50-99_acc: 0.7485		eval_len100-149_acc: 0.7005		lr: 0.001
+olmolm1l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.871		eval_len50-99_acc: 0.751		eval_len100-149_acc: 0.6975		lr: 0.001
+olmolm1l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9615		eval_len50-99_acc: 0.549		eval_len100-149_acc: 0.497		lr: 0.001
+olmolm1l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.848		eval_len100-149_acc: 0.6075		lr: 0.0001
+olmolm1l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.996		eval_len50-99_acc: 0.8485		eval_len100-149_acc: 0.627		lr: 0.0001
+olmolm1l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.8565		eval_len100-149_acc: 0.618		lr: 0.0001
+olmolm1l4h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9435		eval_len50-99_acc: 0.7845		eval_len100-149_acc: 0.6785		lr: 0.001
+olmolm1l4h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9445		eval_len50-99_acc: 0.77		eval_len100-149_acc: 0.7195		lr: 0.001
+olmolm1l4h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.972		eval_len50-99_acc: 0.735		eval_len100-149_acc: 0.6315		lr: 0.001
+olmolm1l4h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9875		eval_len50-99_acc: 0.771		eval_len100-149_acc: 0.6215		lr: 0.0001
+olmolm1l4h256d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.996		eval_len50-99_acc: 0.786		eval_len100-149_acc: 0.5865		lr: 0.0001
+olmolm1l4h256d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.779		eval_len100-149_acc: 0.589		lr: 0.0001
+olmolm2l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.884		eval_len50-99_acc: 0.6835		eval_len100-149_acc: 0.4915		lr: 0.001
+olmolm2l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9505		eval_len50-99_acc: 0.813		eval_len100-149_acc: 0.4855		lr: 0.001
+olmolm2l2h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9955		eval_len50-99_acc: 0.7535		eval_len100-149_acc: 0.398		lr: 0.001
+olmolm2l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.942		eval_len50-99_acc: 0.676		eval_len100-149_acc: 0.359		lr: 0.0001
+olmolm2l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9545		eval_len50-99_acc: 0.7105		eval_len100-149_acc: 0.273		lr: 0.0001
+olmolm2l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9785		eval_len50-99_acc: 0.4875		eval_len100-149_acc: 0.0755		lr: 0.0001
+olmolm2l2h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.855		eval_len50-99_acc: 0.676		eval_len100-149_acc: 0.5115		lr: 0.001
+olmolm2l2h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9595		eval_len50-99_acc: 0.7395		eval_len100-149_acc: 0.44		lr: 0.001
+olmolm2l2h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.986		eval_len50-99_acc: 0.6175		eval_len100-149_acc: 0.442		lr: 0.001
+olmolm2l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8895		eval_len50-99_acc: 0.677		eval_len100-149_acc: 0.434		lr: 0.0001
+olmolm2l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8955		eval_len50-99_acc: 0.674		eval_len100-149_acc: 0.4505		lr: 0.0001
+olmolm2l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9295		eval_len50-99_acc: 0.554		eval_len100-149_acc: 0.009		lr: 0.0001
+olmolm2l2h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9945		eval_len50-99_acc: 0.8515		eval_len100-149_acc: 0.7505		lr: 0.001
+olmolm2l2h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.995		eval_len50-99_acc: 0.849		eval_len100-149_acc: 0.7585		lr: 0.001
+olmolm2l2h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.383		eval_len100-149_acc: 0.123		lr: 0.001
+olmolm2l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.954		eval_len50-99_acc: 0.7985		eval_len100-149_acc: 0.756		lr: 0.0001
+olmolm2l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9825		eval_len50-99_acc: 0.3675		eval_len100-149_acc: 0.0025		lr: 0.0001
+olmolm2l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.993		eval_len50-99_acc: 0.8475		eval_len100-149_acc: 0.7585		lr: 0.001
+olmolm2l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.998		eval_len50-99_acc: 0.831		eval_len100-149_acc: 0.769		lr: 0.001
+olmolm2l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.818		eval_len100-149_acc: 0.6145		lr: 0.001
+olmolm2l2h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9205		eval_len50-99_acc: 0.783		eval_len100-149_acc: 0.737		lr: 0.0001
+olmolm2l2h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9395		eval_len50-99_acc: 0.7905		eval_len100-149_acc: 0.6475		lr: 0.0001
+olmolm2l2h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.998		eval_len50-99_acc: 0.5545		eval_len100-149_acc: 0.369		lr: 0.0001
+olmolm2l2h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.665		eval_len50-99_acc: 0.447		eval_len100-149_acc: 0.411		lr: 0.001
+olmolm2l2h256d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.999		eval_len50-99_acc: 0.0995		eval_len100-149_acc: 0.0005		lr: 0.001
+olmolm2l2h256d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.891		eval_len50-99_acc: 0.6945		eval_len100-149_acc: 0.6225		lr: 0.0001
+olmolm2l2h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9915		eval_len50-99_acc: 0.3575		eval_len100-149_acc: 0.1345		lr: 0.0001
+olmolm2l2h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.7185		eval_len50-99_acc: 0.4365		eval_len100-149_acc: 0.364		lr: 0.001
+olmolm2l2h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9545		eval_len50-99_acc: 0.2745		eval_len100-149_acc: 0.16		lr: 0.001
+olmolm2l2h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.907		eval_len50-99_acc: 0.7045		eval_len100-149_acc: 0.625		lr: 0.0001
+olmolm2l2h256d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.4375		eval_len100-149_acc: 0.1695		lr: 0.0001
+olmolm2l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9945		eval_len50-99_acc: 0.482		eval_len100-149_acc: 0.222		lr: 0.001
+olmolm2l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.354		eval_len100-149_acc: 0.038		lr: 0.001
+olmolm2l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.443		eval_len100-149_acc: 0.459		lr: 0.001
+olmolm2l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9995		eval_len50-99_acc: 0.422		eval_len100-149_acc: 0.465		lr: 0.001
+olmolm2l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9065		eval_len50-99_acc: 0.4215		eval_len100-149_acc: 0.4385		lr: 0.0001
+olmolm2l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.981		eval_len50-99_acc: 0.4495		eval_len100-149_acc: 0.3485		lr: 0.0001
+olmolm2l4h16d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9955		eval_len50-99_acc: 0.419		eval_len100-149_acc: 0.275		lr: 0.0001
+olmolm2l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.416		eval_len100-149_acc: 0.4495		lr: 0.001
+olmolm2l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9975		eval_len50-99_acc: 0.432		eval_len100-149_acc: 0.4625		lr: 0.001
+olmolm2l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9995		eval_len50-99_acc: 0.472		eval_len100-149_acc: 0.4345		lr: 0.001
+olmolm2l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.816		eval_len50-99_acc: 0.431		eval_len100-149_acc: 0.414		lr: 0.0001
+olmolm2l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.89		eval_len50-99_acc: 0.418		eval_len100-149_acc: 0.4445		lr: 0.0001
+olmolm2l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.986		eval_len50-99_acc: 0.3115		eval_len100-149_acc: 0.3065		lr: 0.0001
+olmolm2l4h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.906		eval_len50-99_acc: 0.6925		eval_len100-149_acc: 0.491		lr: 0.001
+olmolm2l4h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9615		eval_len50-99_acc: 0.7425		eval_len100-149_acc: 0.4235		lr: 0.001
+olmolm2l4h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.7075		eval_len100-149_acc: 0.4015		lr: 0.001
+olmolm2l4h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.868		eval_len50-99_acc: 0.636		eval_len100-149_acc: 0.446		lr: 0.0001
+olmolm2l4h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9665		eval_len50-99_acc: 0.717		eval_len100-149_acc: 0.326		lr: 0.0001
+olmolm2l4h64d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.446		eval_len100-149_acc: 0.1195		lr: 0.0001
+olmolm2l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.751		eval_len50-99_acc: 0.534		eval_len100-149_acc: 0.4095		lr: 0.001
+olmolm2l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.983		eval_len50-99_acc: 0.7095		eval_len100-149_acc: 0.2495		lr: 0.001
+olmolm2l4h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.589		eval_len100-149_acc: 0.0		lr: 0.001
+olmolm2l4h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8425		eval_len50-99_acc: 0.6165		eval_len100-149_acc: 0.4395		lr: 0.0001
+olmolm2l4h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9755		eval_len50-99_acc: 0.759		eval_len100-149_acc: 0.4035		lr: 0.0001
+olmolm2l4h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.545		eval_len100-149_acc: 0.187		lr: 0.0001
+olmolm2l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9415		eval_len50-99_acc: 0.69		eval_len100-149_acc: 0.4765		lr: 0.001
+olmolm2l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.948		eval_len50-99_acc: 0.6695		eval_len100-149_acc: 0.477		lr: 0.001
+olmolm2l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9725		eval_len50-99_acc: 0.465		eval_len100-149_acc: 0.2775		lr: 0.001
+olmolm2l4h256d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.988		eval_len50-99_acc: 0.7835		eval_len100-149_acc: 0.613		lr: 0.0001
+olmolm2l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.5935		eval_len100-149_acc: 0.2675		lr: 0.0001
+olmolm2l4h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9295		eval_len50-99_acc: 0.748		eval_len100-149_acc: 0.6065		lr: 0.001
+olmolm2l4h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9985		eval_len50-99_acc: 0.603		eval_len100-149_acc: 0.3435		lr: 0.001
+olmolm2l4h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9665		eval_len50-99_acc: 0.782		eval_len100-149_acc: 0.492		lr: 0.0001
+olmolm2l4h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.981		eval_len50-99_acc: 0.767		eval_len100-149_acc: 0.5105		lr: 0.0001
+olmolm2l4h256d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.5875		eval_len100-149_acc: 0.333		lr: 0.0001
+olmolm4l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9295		eval_len50-99_acc: 0.676		eval_len100-149_acc: 0.1215		lr: 0.001
+olmolm4l2h16d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.974		eval_len50-99_acc: 0.665		eval_len100-149_acc: 0.5		lr: 0.001
+olmolm4l2h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.455		eval_len100-149_acc: 0.3635		lr: 0.001
+olmolm4l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7555		eval_len50-99_acc: 0.539		eval_len100-149_acc: 0.4145		lr: 0.0001
+olmolm4l2h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.939		eval_len50-99_acc: 0.6695		eval_len100-149_acc: 0.269		lr: 0.0001
+olmolm4l2h16d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.4525		eval_len100-149_acc: 0.0045		lr: 0.0001
+olmolm4l2h16d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9755		eval_len50-99_acc: 0.7685		eval_len100-149_acc: 0.5365		lr: 0.001
+olmolm4l2h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.5585		eval_len100-149_acc: 0.2985		lr: 0.001
+olmolm4l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.94		eval_len50-99_acc: 0.741		eval_len100-149_acc: 0.34		lr: 0.0001
+olmolm4l2h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.985		eval_len50-99_acc: 0.6875		eval_len100-149_acc: 0.5615		lr: 0.0001
+olmolm4l2h16d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9975		eval_len50-99_acc: 0.6955		eval_len100-149_acc: 0.5425		lr: 0.0001
+olmolm4l2h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.8905		eval_len100-149_acc: 0.547		lr: 0.001
+olmolm4l2h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.999		eval_len50-99_acc: 0.9365		eval_len100-149_acc: 0.7325		lr: 0.001
+olmolm4l2h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9995		eval_len50-99_acc: 0.9245		eval_len100-149_acc: 0.8305		lr: 0.001
+olmolm4l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.954		eval_len50-99_acc: 0.7905		eval_len100-149_acc: 0.7415		lr: 0.0001
+olmolm4l2h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.966		eval_len50-99_acc: 0.814		eval_len100-149_acc: 0.7125		lr: 0.0001
+olmolm4l2h64d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.6075		eval_len100-149_acc: 0.5945		lr: 0.0001
+olmolm4l2h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.982		eval_len50-99_acc: 0.861		eval_len100-149_acc: 0.844		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.7995		eval_len100-149_acc: 0.474		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.885		eval_len100-149_acc: 0.6035		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.8865		eval_len100-149_acc: 0.654		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.888		eval_len100-149_acc: 0.6475		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.895		eval_len100-149_acc: 0.668		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.899		eval_len100-149_acc: 0.673		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.902		eval_len100-149_acc: 0.681		lr: 0.001
+olmolm4l2h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9635		eval_len50-99_acc: 0.786		eval_len100-149_acc: 0.6865		lr: 0.0001
+olmolm4l2h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9915		eval_len50-99_acc: 0.8315		eval_len100-149_acc: 0.576		lr: 0.0001
+olmolm4l2h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.657		eval_len100-149_acc: 0.032		lr: 0.0001
+olmolm4l2h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.9755		eval_len50-99_acc: 0.757		eval_len100-149_acc: 0.5885		lr: 0.001
+olmolm4l2h256d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9945		eval_len50-99_acc: 0.7995		eval_len100-149_acc: 0.402		lr: 0.001
+olmolm4l2h256d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.719		eval_len100-149_acc: 0.2765		lr: 0.001
+olmolm4l2h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.994		eval_len50-99_acc: 0.8545		eval_len100-149_acc: 0.6755		lr: 0.0001
+olmolm4l2h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.7245		eval_len100-149_acc: 0.371		lr: 0.0001
+olmolm4l2h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.771		eval_len50-99_acc: 0.6485		eval_len100-149_acc: 0.6115		lr: 0.001
+olmolm4l2h256d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.8485		eval_len50-99_acc: 0.6745		eval_len100-149_acc: 0.6025		lr: 0.001
+olmolm4l2h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.4105		eval_len100-149_acc: 0.088		lr: 0.001
+olmolm4l2h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.937		eval_len50-99_acc: 0.793		eval_len100-149_acc: 0.703		lr: 0.0001
+olmolm4l2h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.977		eval_len50-99_acc: 0.821		eval_len100-149_acc: 0.5995		lr: 0.0001
+olmolm4l2h256d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.641		eval_len100-149_acc: 0.4245		lr: 0.0001
+olmolm4l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.4485		eval_len100-149_acc: 0.375		lr: 0.001
+olmolm4l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.995		eval_len50-99_acc: 0.436		eval_len100-149_acc: 0.4565		lr: 0.001
+olmolm4l4h16d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9985		eval_len50-99_acc: 0.5075		eval_len100-149_acc: 0.3855		lr: 0.001
+olmolm4l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.7205		eval_len50-99_acc: 0.46		eval_len100-149_acc: 0.434		lr: 0.0001
+olmolm4l4h16d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.943		eval_len50-99_acc: 0.375		eval_len100-149_acc: 0.4745		lr: 0.0001
+olmolm4l4h16d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.342		eval_len100-149_acc: 0.085		lr: 0.0001
+olmolm4l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.449		eval_len100-149_acc: 0.434		lr: 0.001
+olmolm4l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9945		eval_len50-99_acc: 0.4465		eval_len100-149_acc: 0.449		lr: 0.001
+olmolm4l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.5025		eval_len100-149_acc: 0.409		lr: 0.001
+olmolm4l4h16d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.506		eval_len100-149_acc: 0.3845		lr: 0.001
+olmolm4l4h16d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.97		eval_len50-99_acc: 0.4045		eval_len100-149_acc: 0.4575		lr: 0.0001
+olmolm4l4h16d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.4735		eval_len100-149_acc: 0.446		lr: 0.0001
+olmolm4l4h16d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9995		eval_len50-99_acc: 0.4895		eval_len100-149_acc: 0.435		lr: 0.0001
+olmolm4l4h64d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.985		eval_len50-99_acc: 0.8315		eval_len100-149_acc: 0.6505		lr: 0.001
+olmolm4l4h64d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.8705		eval_len100-149_acc: 0.502		lr: 0.001
+olmolm4l4h64d0drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.985		eval_len50-99_acc: 0.76		eval_len100-149_acc: 0.4335		lr: 0.0001
+olmolm4l4h64d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.7345		eval_len100-149_acc: 0.499		lr: 0.0001
+olmolm4l4h64d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.748		eval_len100-149_acc: 0.5575		lr: 0.0001
+olmolm4l4h64d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9985		eval_len50-99_acc: 0.742		eval_len100-149_acc: 0.563		lr: 0.0001
+olmolm4l4h64d0.1drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.974		eval_len50-99_acc: 0.797		eval_len100-149_acc: 0.632		lr: 0.001
+olmolm4l4h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9935		eval_len50-99_acc: 0.8315		eval_len100-149_acc: 0.286		lr: 0.001
+olmolm4l4h64d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.6275		eval_len100-149_acc: 0.0045		lr: 0.001
+olmolm4l4h64d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.8385		eval_len50-99_acc: 0.6195		eval_len100-149_acc: 0.451		lr: 0.0001
+olmolm4l4h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.5785		eval_len100-149_acc: 0.2385		lr: 0.0001
+olmolm4l4h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.677		eval_len100-149_acc: 0.3935		lr: 0.0001
+olmolm4l4h64d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9985		eval_len50-99_acc: 0.689		eval_len100-149_acc: 0.42		lr: 0.0001
+olmolm4l4h256d0drstp30k0.001lr	reach max step			eval_len0-49_acc: 0.8875		eval_len50-99_acc: 0.754		eval_len100-149_acc: 0.6525		lr: 0.001
+olmolm4l4h256d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.782		eval_len100-149_acc: 0.451		lr: 0.001
+olmolm4l4h256d0drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.999		eval_len50-99_acc: 0.8305		eval_len100-149_acc: 0.5745		lr: 0.001
+olmolm4l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.998		eval_len50-99_acc: 0.8675		eval_len100-149_acc: 0.7185		lr: 0.0001
+olmolm4l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 0.9965		eval_len50-99_acc: 0.879		eval_len100-149_acc: 0.7155		lr: 0.0001
+olmolm4l4h256d0drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.847		eval_len100-149_acc: 0.6685		lr: 0.0001
+olmolm4l4h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 0.9905		eval_len50-99_acc: 0.8765		eval_len100-149_acc: 0.7555		lr: 0.001
+olmolm4l4h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.845		eval_len100-149_acc: 0.674		lr: 0.001
+olmolm4l4h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.8945		eval_len100-149_acc: 0.744		lr: 0.001
+olmolm4l4h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.897		eval_len100-149_acc: 0.735		lr: 0.001
+olmolm4l4h256d0.1drstp30k0.001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9065		eval_len100-149_acc: 0.731		lr: 0.001
+olmolm4l4h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9825		eval_len50-99_acc: 0.8565		eval_len100-149_acc: 0.719		lr: 0.0001
+olmolm4l4h256d0.1drstp30k0.0001lr	reach max step			eval_len0-49_acc: 0.9855		eval_len50-99_acc: 0.8645		eval_len100-149_acc: 0.6615		lr: 0.0001
+olmolm4l4h256d0.1drstp30k0.0001lr	>> reach max step			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.7605		eval_len100-149_acc: 0.4895		lr: 0.0001
