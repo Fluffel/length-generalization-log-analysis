@@ -213,6 +213,26 @@ def stale_plots(script: PlotScript, *, newer_than: float) -> list[str]:
     ]
 
 
+def remove_orphan_plots(script: PlotScript) -> list[str]:
+    """Delete SVGs in this script's plot directory that are no longer in its task list.
+
+    Dropping a name from ``tasks=(...)`` stops creating and displaying that
+    panel, but the old file would otherwise stay on disk.  CI then treats it as
+    a stale plot because it is older than the newly written summary CSV.
+    """
+    plot_dir = script.plot_path("__task__").parent
+    if not plot_dir.is_dir():
+        return []
+    wanted = {script.plot_path(task).name for task in script.tasks}
+    removed: list[str] = []
+    for path in sorted(plot_dir.glob("*.svg")):
+        if path.name in wanted:
+            continue
+        path.unlink()
+        removed.append(path.stem)
+    return removed
+
+
 def script_bin_filter(script: PlotScript, *, num_bins: int | None) -> BinFilter:
     """The same run/bin selection the plot script applies before drawing."""
     counts: frozenset[int] = frozenset()
@@ -514,6 +534,12 @@ def main() -> int:
                 failures.append(
                     f"{script.path.name} did not regenerate: {', '.join(stale)}"
                 )
+
+    for script in scripts:
+        if removed := remove_orphan_plots(script):
+            print(
+                f"Removed leftover plots from {script.path.name}: {', '.join(removed)}"
+            )
 
     html_dir = args.output
     html_dir.mkdir(parents=True, exist_ok=True)
