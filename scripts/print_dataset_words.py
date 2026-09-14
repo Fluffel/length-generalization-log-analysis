@@ -48,6 +48,7 @@ _TASK_ALIASES = {
     "d3": "d_3",
     "d4": "d_4",
     "d12": "d_12",
+    "dyck2": "dyck_2",
     "012star_0_2star": "012_star_0_2_star",
     "aastar": "aa_star",
     "ababstar": "abab_star",
@@ -337,13 +338,21 @@ def _print_dataset_header(dataset: Any, description: str) -> None:
 # ── Dataset construction ────────────────────────────────────────────────────
 
 
-def _make_run_config(*, task: str, train_range: tuple[int, int], num_test_bins: int, test_num: int):
+def _make_run_config(
+    *,
+    task: str,
+    train_range: tuple[int, int],
+    num_test_bins: int,
+    test_num: int,
+    sort_vocab_size: int | None = None,
+):
     utils = _import_module_or_exit("algorithmic.utils")
     run_config = utils.default_transformer_sweep()
     run_config.task = task
     run_config.train_length_range = train_range
     run_config.num_test_bins = num_test_bins
     run_config.test_num = test_num
+    run_config.sort_vocab_size = sort_vocab_size
     return run_config
 
 
@@ -358,6 +367,7 @@ def _build_split(args, task: str):
         train_range=_parse_length_range(args.train_range),
         num_test_bins=args.num_test_bins,
         test_num=args.test_num,
+        sort_vocab_size=args.sort_vocab_size,
     )
     corpus_limit = None if args.full_corpus else max(args.corpus_limit, args.num)
     train_dataset, test_dataset, train_range, test_ranges = mod.build_datasets(
@@ -518,6 +528,15 @@ def build_parser() -> argparse.ArgumentParser:
     )
     build.add_argument("--num-test-bins", type=int, default=3, help="Number of eval bins.")
     build.add_argument("--test-num", type=int, default=2000, help="Examples per eval bin.")
+    build.add_argument(
+        "--sort-vocab-size",
+        type=int,
+        default=None,
+        help=(
+            "Sort task only: number of distinct content tokens. If omitted, uses "
+            "max_test_length. Raised to the maximum sequence length if smaller."
+        ),
+    )
     build.add_argument(
         "--corpus-limit",
         type=int,
