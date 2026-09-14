@@ -18,6 +18,7 @@ tasks=(
     "selective_copy"
     "sort"
     "unique_copy"
+    "dyck_2"
 )
 
 failed=()

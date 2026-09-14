@@ -1,0 +1,2 @@
+olmogdn22l64d0.1drnestp30k0.001lr	>> early stop 0.8633333333333333			eval_len0-49_acc: 1.0		eval_len50-99_acc: 1.0		eval_len100-149_acc: 0.9775		lr: 0.001
+olmogdn22l64d0.1drnestp30k0.001lr	>> early stop 0.8966666666666666			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9995		eval_len100-149_acc: 0.986		lr: 0.001

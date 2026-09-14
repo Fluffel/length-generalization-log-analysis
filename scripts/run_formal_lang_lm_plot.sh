@@ -11,7 +11,6 @@ tasks=(
 "aa_star_bb_star"
 "abab_star"
 "ab_star_d_bc_star"
-"an_star_a2"
 "d_2"
 "d_3"
 "d_4"

@@ -1,0 +1,4 @@
+olmogdn22l64d0.1drnestp30k0.001lr	>> early stop 0.7766666666666666			eval_len0-49_acc: 1.0		eval_len50-99_acc: 1.0		eval_len100-149_acc: 0.971		lr: 0.001
+olmogdn22l64d0.1drnestp30k0.001lr	>> early stop 0.8266666666666667			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9995		eval_len100-149_acc: 0.9765		lr: 0.001
+olmogdn22l64d0.1drnestp30k0.001lr	>> early stop 0.9233333333333333			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.9995		eval_len100-149_acc: 0.9785		lr: 0.001
+olmogdn22l64d0.1drnestp30k0.001lr	>> early stop 0.9266666666666666			eval_len0-49_acc: 1.0		eval_len50-99_acc: 0.999		eval_len100-149_acc: 0.983		lr: 0.001
