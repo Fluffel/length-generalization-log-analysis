@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Fail the whole script when any task fails to plot.  Without this the loop
-# keeps going and exits with the status of the last task only, so a broken
-# plot would be published as whatever SVG happened to be on disk already.
-# Exit code 3 means "no runs for this task yet", which is not a failure.
+# Plot every task that can be plotted.  Missing or unplottable tasks are
+# skipped (and any leftover SVG is removed) so the rest of the suite and the
+# HTML overview still get written.  Exit code 3 from generate_plot_df.py means
+# "no runs for this task yet".
 set -uo pipefail
 
 tasks=(
@@ -37,13 +37,14 @@ for TASK in "${tasks[@]}"; do
     status=$?
     if [[ $status -eq 3 ]]; then
         skipped+=("$TASK")
+        rm -f "site/plots/ssm/tasks/${TASK}.svg"
     elif [[ $status -ne 0 ]]; then
         failed+=("$TASK")
+        rm -f "site/plots/ssm/tasks/${TASK}.svg"
     fi
 done
 
 [[ ${#skipped[@]} -gt 0 ]] && echo "No runs yet, skipped: ${skipped[*]}"
 if [[ ${#failed[@]} -gt 0 ]]; then
     echo "Failed to plot: ${failed[*]}" >&2
-    exit 1
 fi

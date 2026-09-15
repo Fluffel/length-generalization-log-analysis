@@ -46,6 +46,7 @@ import argparse
 import csv
 import math
 import sys
+import traceback
 from collections import defaultdict
 from pathlib import Path
 
@@ -355,7 +356,7 @@ def _prepare_task_plot(
     all_bucket_names = {str(r["bucket"]) for r in filtered_rows}
     x_tick_ends = sorted({int(x) for b in all_bucket_names if (x := _bucket_plot_x(b)) is not None})
     if not x_tick_ends:
-        raise SystemExit(
+        raise NoDataForTask(
             f"No parseable bucket ranges for task={task!r} "
             "(expected bucket names like '0-50')."
         )
@@ -1134,36 +1135,43 @@ def main() -> int:
     df = apply_keep_remove_filters(df, args.keep, args.remove)
     df = apply_query_filters(df, args.query, args.exclude_query)
     if df.empty:
-        raise SystemExit("No rows left after DataFrame filtering.")
+        raise NoDataForTask("No rows left after DataFrame filtering.")
     df = bin_filter.apply(df)
     if df.empty:
-        raise SystemExit(f"No runs left after bin filtering ({bin_filter.describe()}).")
+        raise NoDataForTask(f"No runs left after bin filtering ({bin_filter.describe()}).")
     if args.dump_selected or args.dump_selected_only:
         _dump_selected_rows(df, group_by=args.group_by, selected_cols=args.selected_cols)
         if args.dump_selected_only:
             return 0
 
     plot_path = args.output_path or (default_plot_dir / default_name)
-    plot_tasks_df(
-        df,
-        tasks=tasks,
-        titles=titles,
-        output_path=plot_path,
-        legend_loc=args.legend_loc,
-        group_by=args.group_by,
-        group_label_mode=args.group_label_mode,
-        group_custom_labels=custom_labels,
-        max_aggregation=args.max_aggregation,
-        max_bin_weight=args.max_bin_weight,
-        max_acc_threshold=args.max_acc_threshold,
-        x_ticks_mode=args.x_ticks_mode,
-        x_tick_step=args.x_tick_step,
-        x_axis_break=args.x_axis_break,
-        num_bins=None,  # already applied via BinFilter on the whole frame
-        merge_bins=args.merge_bins,
-        ncols=args.ncols if multitask else 1,
-        plot_size=size,
-    )
+    try:
+        plot_tasks_df(
+            df,
+            tasks=tasks,
+            titles=titles,
+            output_path=plot_path,
+            legend_loc=args.legend_loc,
+            group_by=args.group_by,
+            group_label_mode=args.group_label_mode,
+            group_custom_labels=custom_labels,
+            max_aggregation=args.max_aggregation,
+            max_bin_weight=args.max_bin_weight,
+            max_acc_threshold=args.max_acc_threshold,
+            x_ticks_mode=args.x_ticks_mode,
+            x_tick_step=args.x_tick_step,
+            x_axis_break=args.x_axis_break,
+            num_bins=None,  # already applied via BinFilter on the whole frame
+            merge_bins=args.merge_bins,
+            ncols=args.ncols if multitask else 1,
+            plot_size=size,
+        )
+    except NoDataForTask:
+        raise
+    except Exception as e:
+        print(f"Failed to plot {', '.join(tasks)}: {e}", file=sys.stderr)
+        traceback.print_exc()
+        return 1
     print(f"Wrote plot: {plot_path}")
     return 0
 

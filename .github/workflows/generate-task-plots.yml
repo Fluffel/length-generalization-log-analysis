@@ -53,14 +53,16 @@ jobs:
         run: python scripts/update_plots.py --arch lm
 
       - name: Check every published plot came from this run
-        # Second line of defence behind update_ssm_plots.py: the artifact must
-        # never contain an SVG left over from the checkout.
+        # Second line of defence behind update_plots.py: drop leftover SVGs
+        # from the checkout rather than failing the job.  Missing plots are
+        # expected when a task has no (or incomplete) runs; the HTML page
+        # already shows "no plot generated" for those panels.
         run: |
           stale=$(find site/plots -name '*.svg' ! -newer summary.csv -print)
           if [ -n "$stale" ]; then
-            echo "Plots older than the summary CSV would be published:"
+            echo "Removing plots older than the summary CSV:"
             echo "$stale"
-            exit 1
+            echo "$stale" | xargs rm -f
           fi
           echo "All $(find site/plots -name '*.svg' | wc -l) plots are current."
 

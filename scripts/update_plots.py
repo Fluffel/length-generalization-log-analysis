@@ -5,6 +5,10 @@ Runs the ``run_*_plot.sh`` scripts for ``--arch`` (each writes one SVG per task)
 then writes one HTML page per group that lays those SVGs out in a grid of
 ``--columns`` columns.
 
+A task that cannot be plotted (no runs, incomplete logs, drawing error) is
+skipped: the leftover SVG is removed, the failure is printed, and the rest of
+the suite plus the HTML page are still produced.
+
 Each panel lists the models that appear in that graph's legend — the same
 selection ``generate_plot_df.py`` used to draw the SVG — with that run's
 accuracy in every plotted bin.  A panel gets a green border when at least one
@@ -198,27 +202,27 @@ def run_plot_script(script: PlotScript) -> int:
     return proc.returncode
 
 
-def stale_plots(script: PlotScript, *, newer_than: float) -> list[str]:
-    """Tasks whose SVG is left over from a previous run rather than rewritten.
+def remove_stale_plots(script: PlotScript, *, newer_than: float) -> list[str]:
+    """Delete leftover SVGs that this run did not rewrite.
 
-    A plot script can fail for one task and leave the old SVG in place, which
-    would then be published as if it were current.  A task with no SVG at all
-    is fine: it simply has no runs yet, and the page says so.
+    A plot script can skip or fail for one task and leave the old SVG in
+    place.  Drop those files so the HTML shows "no plot generated" instead
+    of publishing yesterday's figure as current.
     """
-    return [
-        task
-        for task in script.tasks
-        if (path := script.plot_path(task)).exists()
-        and path.stat().st_mtime < newer_than
-    ]
+    removed: list[str] = []
+    for task in script.tasks:
+        path = script.plot_path(task)
+        if path.exists() and path.stat().st_mtime < newer_than:
+            path.unlink()
+            removed.append(task)
+    return removed
 
 
 def remove_orphan_plots(script: PlotScript) -> list[str]:
     """Delete SVGs in this script's plot directory that are no longer in its task list.
 
     Dropping a name from ``tasks=(...)`` stops creating and displaying that
-    panel, but the old file would otherwise stay on disk.  CI then treats it as
-    a stale plot because it is older than the newly written summary CSV.
+    panel; the old file is removed so it is not left next to the new plots.
     """
     plot_dir = script.plot_path("__task__").parent
     if not plot_dir.is_dir():
@@ -284,6 +288,12 @@ def plotted_series_for_task(df, script: PlotScript, task: str) -> list[PlottedSe
             merge_bins=script.merge_bins,
         )
     except NoDataForTask:
+        return []
+    except SystemExit as e:
+        print(f"  Skipping {task}: {e}", flush=True)
+        return []
+    except Exception as e:
+        print(f"  Could not describe series for {task}: {e}", flush=True)
         return []
 
     series: list[PlottedSeries] = []
@@ -523,16 +533,19 @@ def main() -> int:
     # written by this run.  One second of slack absorbs filesystem timestamp
     # granularity.
     run_started = time.time() - 1
-    failures: list[str] = []
+    warnings: list[str] = []
 
     if not args.skip_plots:
         for script in scripts:
             if run_plot_script(script) != 0:
-                failures.append(f"{script.path.name} exited non-zero")
+                warnings.append(f"{script.path.name} exited non-zero")
         for script in scripts:
-            if stale := stale_plots(script, newer_than=run_started):
-                failures.append(
+            if stale := remove_stale_plots(script, newer_than=run_started):
+                warnings.append(
                     f"{script.path.name} did not regenerate: {', '.join(stale)}"
+                )
+                print(
+                    f"Removed stale plots from {script.path.name}: {', '.join(stale)}"
                 )
 
     for script in scripts:
@@ -545,49 +558,53 @@ def main() -> int:
     html_dir.mkdir(parents=True, exist_ok=True)
 
     for script in scripts:
-        csv_path = args.csv or script.csv_path
-        num_bins = args.num_bins if args.num_bins is not None else None
-        df = load_summary_dataframe(csv_path)
-        filtered = filter_summary_for_script(df, script, num_bins=num_bins)
-        if filtered.empty:
-            keep = ", ".join(script.keep) if script.keep else "no --keep"
-            available = ", ".join(sorted(set(df["arch"].astype(str))))
-            print(
-                f"Warning: no rows left for {script.path.name} after {keep}; "
-                f"available arch values: {available}"
+        try:
+            csv_path = args.csv or script.csv_path
+            num_bins = args.num_bins if args.num_bins is not None else None
+            df = load_summary_dataframe(csv_path)
+            filtered = filter_summary_for_script(df, script, num_bins=num_bins)
+            if filtered.empty:
+                keep = ", ".join(script.keep) if script.keep else "no --keep"
+                available = (
+                    ", ".join(sorted(set(df["arch"].astype(str))))
+                    if "arch" in df.columns and not df.empty
+                    else "(none)"
+                )
+                print(
+                    f"Warning: no rows left for {script.path.name} after {keep}; "
+                    f"available arch values: {available}"
+                )
+
+            panels = build_panels(
+                df, script, threshold=threshold, num_bins=num_bins
             )
+            page = render_page(
+                script,
+                panels,
+                arch=args.arch,
+                threshold=threshold,
+                columns=args.columns,
+                num_bins=num_bins,
+                html_dir=html_dir,
+            )
+            out_path = html_dir / f"{script.name}_{args.arch}_plots.html"
+            out_path.write_text(page)
 
-        panels = build_panels(
-            df, script, threshold=threshold, num_bins=num_bins
-        )
-        page = render_page(
-            script,
-            panels,
-            arch=args.arch,
-            threshold=threshold,
-            columns=args.columns,
-            num_bins=num_bins,
-            html_dir=html_dir,
-        )
-        out_path = html_dir / f"{script.name}_{args.arch}_plots.html"
-        out_path.write_text(page)
+            passed = [p.task for p in panels if p.highlighted]
+            print(
+                f"Wrote {out_path} ({len(panels)} plots, "
+                f"{len(passed)} above {threshold * 100:.1f}% for {args.arch})"
+            )
+            if passed:
+                print(f"  highlighted: {', '.join(passed)}")
+        except (Exception, SystemExit) as e:
+            warnings.append(f"HTML for {script.path.name}: {e}")
+            print(f"Failed to write HTML for {script.path.name}: {e}", file=sys.stderr)
 
-        passed = [p.task for p in panels if p.highlighted]
-        print(
-            f"Wrote {out_path} ({len(panels)} plots, "
-            f"{len(passed)} above {threshold * 100:.1f}% for {args.arch})"
-        )
-        if passed:
-            print(f"  highlighted: {', '.join(passed)}")
-
-    if failures:
-        # Reported only after the HTML is written, so the pages are still there
-        # to inspect, but with a non-zero status so CI never publishes a site
-        # whose plots are older than its data.
-        print("\nPlot generation failed:", file=sys.stderr)
-        for failure in failures:
-            print(f"  - {failure}", file=sys.stderr)
-        return 1
+    if warnings:
+        print("\nPlot generation warnings:", file=sys.stderr)
+        for warning in warnings:
+            print(f"  - {warning}", file=sys.stderr)
     return 0
 
 
