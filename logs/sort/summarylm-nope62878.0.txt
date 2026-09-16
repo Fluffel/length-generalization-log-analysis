@@ -1,0 +1,14 @@
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.041666666666666664			eval_len0-49_acc: 0.944		eval_len50-99_acc: 0.9925		eval_len100-149_acc: 1.0		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.08666666666666667			eval_len0-49_acc: 0.98		eval_len50-99_acc: 0.999		eval_len100-149_acc: 0.9995		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.05416666666666667			eval_len0-49_acc: 0.959		eval_len50-99_acc: 0.993		eval_len100-149_acc: 1.0		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.055			eval_len0-49_acc: 0.968		eval_len50-99_acc: 0.9955		eval_len100-149_acc: 1.0		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.058333333333333334			eval_len0-49_acc: 0.9595		eval_len50-99_acc: 0.999		eval_len100-149_acc: 0.999		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.0825			eval_len0-49_acc: 0.9805		eval_len50-99_acc: 0.975		eval_len100-149_acc: 0.9495		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.024166666666666666			eval_len0-49_acc: 0.923		eval_len50-99_acc: 0.989		eval_len100-149_acc: 1.0		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.09083333333333334			eval_len0-49_acc: 0.9785		eval_len50-99_acc: 0.999		eval_len100-149_acc: 0.995		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.09666666666666666			eval_len0-49_acc: 0.981		eval_len50-99_acc: 0.9985		eval_len100-149_acc: 0.98		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.050833333333333335			eval_len0-49_acc: 0.9615		eval_len50-99_acc: 0.9975		eval_len100-149_acc: 1.0		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.08333333333333333			eval_len0-49_acc: 0.978		eval_len50-99_acc: 0.999		eval_len100-149_acc: 1.0		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.09166666666666666			eval_len0-49_acc: 0.981		eval_len50-99_acc: 0.9965		eval_len100-149_acc: 0.994		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.09916666666666667			eval_len0-49_acc: 0.9825		eval_len50-99_acc: 0.989		eval_len100-149_acc: 0.945		lr: 0.001
+olmolm1l2h64d0.1drnopestp120k0.001lr	early stop 0.1			eval_len0-49_acc: 0.9785		eval_len50-99_acc: 1.0		eval_len100-149_acc: 1.0		lr: 0.001
