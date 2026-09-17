@@ -9,7 +9,6 @@ tasks=(
     "addition"
     "bin_majority_interleave"
     "bin_majority"
-    "flipflop"
     "majority"
     "mkar"
     "mqar"
@@ -19,6 +18,8 @@ tasks=(
     "sort"
     "unique_copy"
     "dyck_2"
+    "parity_majority"
+    "selective_state_tracking"
 )
 
 failed=()

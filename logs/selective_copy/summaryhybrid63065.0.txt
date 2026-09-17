@@ -141,3 +141,9 @@ olmohybsagdn22l4h256d0.1drnenopestp30k0.0001lr	early stop 0.9766666666666667			e
 olmohybsagdn24l2h16d0.0drnenopestp60k0.001lr	reach max step			eval_len0-50_acc: 0.866		eval_len51-100_acc: 0.8755		eval_len101-150_acc: 0.8745		lr: 0.001
 olmohybsagdn24l2h16d0.0drnenopestp60k0.001lr	reach max step			eval_len0-50_acc: 0.863		eval_len51-100_acc: 0.8835		eval_len101-150_acc: 0.8775		lr: 0.001
 olmohybsagdn24l2h16d0.0drnenopestp60k0.001lr	reach max step			eval_len0-50_acc: 0.8615		eval_len51-100_acc: 0.8825		eval_len101-150_acc: 0.88		lr: 0.001
+olmohybsagdn24l2h16d0.0drnenopestp60k0.0001lr	reach max step			eval_len0-50_acc: 0.666		eval_len51-100_acc: 0.678		eval_len101-150_acc: 0.678		lr: 0.0001
+olmohybsagdn24l2h16d0.0drnenopestp60k0.0001lr	reach max step			eval_len0-50_acc: 0.6625		eval_len51-100_acc: 0.683		eval_len101-150_acc: 0.686		lr: 0.0001
+olmohybsagdn24l2h16d0.0drnenopestp60k0.0001lr	reach max step			eval_len0-50_acc: 0.656		eval_len51-100_acc: 0.687		eval_len101-150_acc: 0.681		lr: 0.0001
+olmohybsagdn24l2h16d0.1drnenopestp60k0.001lr	reach max step			eval_len0-50_acc: 0.8125		eval_len51-100_acc: 0.816		eval_len101-150_acc: 0.7995		lr: 0.001
+olmohybsagdn24l2h16d0.1drnenopestp60k0.001lr	reach max step			eval_len0-50_acc: 0.82		eval_len51-100_acc: 0.818		eval_len101-150_acc: 0.793		lr: 0.001
+olmohybsagdn24l2h16d0.1drnenopestp60k0.001lr	reach max step			eval_len0-50_acc: 0.817		eval_len51-100_acc: 0.8245		eval_len101-150_acc: 0.7975		lr: 0.001
