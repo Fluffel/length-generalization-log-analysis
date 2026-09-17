@@ -109,7 +109,6 @@ TASK_PARAM_COLUMNS = [
     "mqar_query_fraction_upper",
     "mqar_monoid",
     "mqar_monoid_n",
-    "mqar_key_size",
     "selective_copy_marker_vocab_size",
     "selective_copy_misc_vocab_size",
 ]
@@ -152,9 +151,8 @@ _MKAR_KEY_LEN_RE = re.compile(r"key[_-]?len(?P<v>[0-9]+)")
 _MKAR_VOCAB_RE = re.compile(r"(?:v[_-]?size|vocab[_-]?size)(?P<v>[0-9]+)")
 _MQAR_FL_RE = re.compile(r"(?:fl|fraction[_-]?lower)(?P<v>" + _FLOAT_TOKEN_RE + r")")
 _MQAR_FU_RE = re.compile(r"(?:fu|fraction[_-]?upper)(?P<v>" + _FLOAT_TOKEN_RE + r")")
-_MQAR_KEY_SIZE_RE = re.compile(r"(?:key[_-]?size|ks)(?P<v>[0-9]+)")
 _MQAR_MONOID_N_RE = re.compile(r"(?:monoid[_-]?n|mn)(?P<v>[0-9]+)")
-_MQAR_MONOID_RE = re.compile(r"(?:monoid|mt)(?P<v>parity|cyclic)")
+_MQAR_MONOID_RE = re.compile(r"(?:monoid|mt)(?P<v>parity|cyclic|s5_limited|s5)")
 _SEL_MARKER_RE = re.compile(
     r"(?:marker[_-]?vocab[_-]?size|marker[_-]?size|mv|v[_-]?size)(?P<v>[0-9]+)"
 )
@@ -170,7 +168,6 @@ TASK_PARAM_DEFAULTS: dict[str, dict[str, str]] = {
         "mqar_query_fraction_upper": "0.2",
         "mqar_monoid": "parity",
         "mqar_monoid_n": "2",
-        "mqar_key_size": "32",
     },
     "selective_copy": {
         "selective_copy_marker_vocab_size": "16",
@@ -316,8 +313,6 @@ def parse_task_params(task: str, summary_file: Path) -> dict[str, str]:
             params["mqar_query_fraction_lower"] = m.group("v")
         if (m := _MQAR_FU_RE.search(stem)):
             params["mqar_query_fraction_upper"] = m.group("v")
-        if (m := _MQAR_KEY_SIZE_RE.search(stem)):
-            params["mqar_key_size"] = m.group("v")
         if (m := _MQAR_MONOID_N_RE.search(stem)):
             params["mqar_monoid_n"] = m.group("v")
         if (m := _MQAR_MONOID_RE.search(stem)):

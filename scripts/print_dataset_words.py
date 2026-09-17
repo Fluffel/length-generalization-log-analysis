@@ -5,6 +5,7 @@ Quick start (from anywhere in the repo):
 
     python length-generalization-log-analysis/scripts/print_dataset_words.py --list
     python length-generalization-log-analysis/scripts/print_dataset_words.py --task parity
+    python length-generalization-log-analysis/scripts/print_dataset_words.py --task s5
     python length-generalization-log-analysis/scripts/print_dataset_words.py --task all --num 2 --no-pause
 
 Must run in the environment where the training dependencies (torch, transformers,
@@ -54,6 +55,12 @@ _TASK_ALIASES = {
     "ababstar": "abab_star",
     "anstara2": "an_star_a2",
     "mqar_word_problem": "mqar",
+    "s_5": "s5",
+    "s5_word_problem": "s5",
+    "s5_limited_word_problem": "s5_limited",
+    "s5_selective": "selective_state_tracking",
+    "s5_selective_product": "selective_state_tracking",
+    "sst": "selective_state_tracking",
 }
 
 # `--task` values that expand to several tasks rather than naming one.
@@ -150,9 +157,13 @@ def _print_listing(module_name: str) -> None:
     print(
         "\nExamples:\n"
         "  --task sort\n"
+        "  --task s5\n"
+        "  --task s5_limited\n"
         "  --task formal --num 2 --no-pause\n"
         "  --task tomita_3 --split test --test-bin len101-150\n"
-        '  --mode class --dataset MQARWordProblemDataset --dataset-kwargs \'{"length_range":[20,30],"max_test_length":100,"key_size":8}\''
+        '  --mode class --dataset S5Dataset --dataset-kwargs \'{"length_range":[20,30],"max_test_length":100}\'\n'
+        '  --mode class --dataset S5Dataset --dataset-kwargs \'{"length_range":[20,30],"max_test_length":100,"limited":true}\'\n'
+        '  --mode class --dataset MQARWordProblemDataset --dataset-kwargs \'{"length_range":[20,30],"max_test_length":100,"monoid_type":"s5"}\''
     )
 
 
@@ -338,6 +349,22 @@ def _print_dataset_header(dataset: Any, description: str) -> None:
 # ── Dataset construction ────────────────────────────────────────────────────
 
 
+def _set_dataset_seed(seed: int | None) -> None:
+    """Seed RNGs the way training does, after the dataset module is imported.
+
+    Training calls HuggingFace ``set_seed(run_config.dataset_seed)`` only once
+    all heavy imports (torch, numpy, transformers) are done, then materializes
+    eval bins. Seeding *before* those imports — as a top-level ``random.seed``
+    would — lets import-time RNG draws steal from the stream, so ``--seed 42``
+    would not reproduce the training eval set.
+    """
+    if seed is None:
+        return
+    from transformers.trainer_utils import set_seed
+
+    set_seed(seed)
+
+
 def _make_run_config(
     *,
     task: str,
@@ -347,7 +374,8 @@ def _make_run_config(
     sort_vocab_size: int | None = None,
 ):
     utils = _import_module_or_exit("algorithmic.utils")
-    run_config = utils.default_transformer_sweep()
+    # Only the dataset fields matter here, so the model side stays empty.
+    run_config = utils.RunConfig(model_family="transformer", architectures=[])
     run_config.task = task
     run_config.train_length_range = train_range
     run_config.num_test_bins = num_test_bins
@@ -370,6 +398,7 @@ def _build_split(args, task: str):
         sort_vocab_size=args.sort_vocab_size,
     )
     corpus_limit = None if args.full_corpus else max(args.corpus_limit, args.num)
+    _set_dataset_seed(args.seed)
     train_dataset, test_dataset, train_range, test_ranges = mod.build_datasets(
         run_config, corpus_size_limit=corpus_limit
     )
@@ -423,6 +452,7 @@ def _instantiate_class(args) -> tuple[Any, str]:
             kwargs[name] = default
             filled.append(f"{name}={default}")
 
+    _set_dataset_seed(args.seed)
     try:
         dataset = cls(**kwargs)
     except TypeError as e:
@@ -503,7 +533,17 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     p.add_argument("--num", type=int, default=5, help="Samples to print per dataset.")
-    p.add_argument("--seed", type=int, default=None, help="Seed python's RNG for reproducible samples.")
+    p.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help=(
+            "Seed used to materialize datasets. Applied via HuggingFace set_seed() "
+            "after importing the dataset module, matching training --dataset-seed. "
+            "If omitted, datasets are not re-seeded (training draws a random seed "
+            "when --dataset-seed is omitted)."
+        ),
+    )
     p.add_argument("--show-ids", action="store_true", help="Also show raw input_ids.")
     p.add_argument("--show-pos", action="store_true", help="Also show pos_ids (randomized during training).")
     p.add_argument(
@@ -575,11 +615,6 @@ def main() -> int:
     if args.list:
         _print_listing(args.module)
         return 0
-
-    if args.seed is not None:
-        import random
-
-        random.seed(args.seed)
 
     if args.mode == "class":
         dataset, description = _instantiate_class(args)

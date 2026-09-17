@@ -10,7 +10,8 @@ skipped: the leftover SVG is removed, the failure is printed, and the rest of
 the suite plus the HTML page are still produced.
 
 Each panel lists the models that appear in that graph's legend — the same
-selection ``generate_plot_df.py`` used to draw the SVG — with that run's
+selection ``generate_plot_df.py`` used to draw the SVG — with the source run
+id (the ``--job-id`` embedded in the summary filename) and that run's
 accuracy in every plotted bin.  A panel gets a green border when at least one
 of those plotted series stays at or above ``--threshold`` in every bin.  Keep
 filters, bin trimming and grouping are read from the shell scripts, so the
@@ -42,6 +43,11 @@ print(f"script dirctory: {REPO_ROOT}")
 _TASKS_ARRAY_RE = re.compile(r"tasks=\(\s*(.*?)\)", re.DOTALL)
 _TOKEN_RE = re.compile(r"\"([^\"]+)\"|'([^']+)'|(\S+)")
 _TASK_PLACEHOLDERS = ("${TASK}", "$TASK")
+# ``summarylm{,-nope,-regN}{job_id}``, ``summaryssm{job_id}``, ``summaryhybrid{job_id}``.
+_SUMMARY_JOB_RE = re.compile(
+    r"^summary(?:lm(?:-nope|-reg[0-9.]+)?|ssm|hybrid)(.+)$",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -77,6 +83,7 @@ class PlottedSeries:
     label: str
     bin_labels: tuple[str, ...]
     accuracies: tuple[float, ...]  # fractions in [0, 1], one per plotted bin
+    run_ids: tuple[str, ...] = ()  # ``--job-id`` values of the plotted run(s)
 
     def passes(self, threshold: float) -> bool:
         return bool(self.accuracies) and all(acc >= threshold for acc in self.accuracies)
@@ -134,6 +141,39 @@ def _optional_float_flag(text: str, flag: str, default: float) -> float:
         return float(raw)
     except ValueError:
         return default
+
+
+def run_id_from_source_file(source_file: str) -> str:
+    """The ``--job-id`` embedded in a summary filename, or the stem as fallback.
+
+    Training writes ``summary{lm,ssm,hybrid}{job_id}.txt``, so
+    ``mqar/summarylm61535_tasks.txt`` is ``61535_tasks`` and
+    ``selective_copy/summarylm-nope62878.0.txt`` is ``62878.0``.
+    """
+    stem = Path(str(source_file)).stem
+    m = _SUMMARY_JOB_RE.match(stem)
+    if m and m.group(1):
+        return m.group(1)
+    return stem
+
+
+def _run_ids_for_datapoints(df, datapoints: set[tuple[str, float]]) -> tuple[str, ...]:
+    """Unique source-file job ids of rows matching the plotted (model, lr) pairs."""
+    if not datapoints or "source_file" not in getattr(df, "columns", []):
+        return ()
+    models = df["model"].astype(str)
+    lrs = df["learning_rate"].astype(float)
+    keep = [(m, float(lr)) in datapoints for m, lr in zip(models, lrs)]
+    if not any(keep):
+        return ()
+    ids: list[str] = []
+    seen: set[str] = set()
+    for sf in df.loc[keep, "source_file"].astype(str):
+        rid = run_id_from_source_file(sf)
+        if rid and rid not in seen:
+            seen.add(rid)
+            ids.append(rid)
+    return tuple(ids)
 
 
 def _parse_task_array(text: str, script: Path) -> list[str]:
@@ -298,6 +338,7 @@ def plotted_series_for_task(df, script: PlotScript, task: str) -> list[PlottedSe
 
     series: list[PlottedSeries] = []
     max_series = prepared["max_series"]
+    plotted_dps = prepared.get("series_plotted_dps") or {}
     for sk in prepared["sub_keys"]:
         if sk not in max_series:
             continue
@@ -307,6 +348,7 @@ def plotted_series_for_task(df, script: PlotScript, task: str) -> list[PlottedSe
                 label=label,
                 bin_labels=_bin_labels_for_series(prepared, xs),
                 accuracies=tuple(m / 100.0 for m in means),
+                run_ids=_run_ids_for_datapoints(sub, plotted_dps.get(sk, set())),
             )
         )
     return series
@@ -371,13 +413,17 @@ _PAGE_TEMPLATE = """<!DOCTYPE html>
 
 
 def _format_series_caption(series: PlottedSeries) -> str:
+    name = html.escape(series.label)
+    if series.run_ids:
+        ids = ", ".join(html.escape(rid) for rid in series.run_ids)
+        name = f"{name} [{ids}]"
     bins = ", ".join(
         f"{html.escape(label)} {acc * 100:.1f}%"
         for label, acc in zip(series.bin_labels, series.accuracies, strict=False)
     )
     if not bins:
-        return html.escape(series.label)
-    return f"{html.escape(series.label)} ({bins})"
+        return name
+    return f"{name} ({bins})"
 
 
 def _render_panel(panel: Panel, html_dir: Path) -> str:
@@ -430,7 +476,8 @@ def render_page(
         f"<strong>{html.escape(arch)}</strong> series is at or above "
         f"{threshold * 100:.1f}% in every shown bin "
         f"({passed} of {len(panels)} tasks).",
-        "Captions list the models in each graph's legend, with accuracy per bin.",
+        "Captions list the models in each graph's legend, with the source run id "
+        "and accuracy per bin.",
         f"Source: {html.escape(str(script.csv_path.relative_to(REPO_ROOT)))}, "
         f"{_bins_note(script, num_bins)}, plots from {html.escape(script.path.name)}.",
         f"Generated {datetime.now().strftime('%Y-%m-%d %H:%M')}.",
@@ -456,9 +503,9 @@ def main() -> int:
         description=(
             "Regenerate the formal-language and task plots, then write one "
             "HTML overview per group with the plots side by side. Captions list "
-            "the models in each graph's legend; panels where a plotted series "
-            "stays at or above the accuracy threshold in every bin get a green "
-            "border."
+            "the models in each graph's legend and the source run id; panels "
+            "where a plotted series stays at or above the accuracy threshold in "
+            "every bin get a green border."
         )
     )
     parser.add_argument(

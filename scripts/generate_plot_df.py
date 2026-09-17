@@ -523,6 +523,7 @@ def _prepare_task_plot(
         "task": task,
         "sub_keys": sub_keys,
         "max_series": max_series,
+        "series_plotted_dps": series_plotted_dps,
         "use_bins": use_bins,
         "x_ticks_mode": x_ticks_mode,
         "x_tick_step": x_tick_step,
