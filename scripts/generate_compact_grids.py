@@ -297,7 +297,15 @@ def _draw_figure(df, spec: FigureSpec, output_dir: Path) -> Path:
 
     output_dir.mkdir(parents=True, exist_ok=True)
     output = output_dir / spec.output_name
-    fig.savefig(output, format="svg", bbox_inches="tight", pad_inches=0.02)
+    # Suppress Matplotlib's generation timestamp so unchanged data produces an
+    # unchanged tracked SVG and the workflow does not create empty-noise commits.
+    fig.savefig(
+        output,
+        format="svg",
+        bbox_inches="tight",
+        pad_inches=0.02,
+        metadata={"Date": None},
+    )
     plt.close(fig)
     print(f"Wrote {output}")
     return output

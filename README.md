@@ -6,9 +6,9 @@ Results can be found here: https://fluffel.github.io/length-generalization-log-a
 ## Compact comparison grids
 
 `scripts/generate_compact_grids.py` creates two tight, paper-style SVG figures:
-one for algorithmic tasks and one for formal languages. The workflow stores
-them in the `compact-comparison-grids` artifact; they are not included in the
-GitHub Pages site.
+one for algorithmic tasks and one for formal languages. The workflow commits
+updated files to `workflow-plots/` on `main`, making them directly visible in
+the GitHub repository. They are not included in the GitHub Pages site.
 
 The configuration is kept at the top of the script:
 
