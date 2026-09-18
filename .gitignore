@@ -1,2 +1,6 @@
 __pycache__/
 site/*_olmossm_plots.html
+
+site/
+workflow-plots/
+scripts/tests/
